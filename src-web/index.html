@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TailwindCSS Documentation</title>
+    <link rel="stylesheet" href="./output.css" />
+    <script src="script/init_const.js"></script>
+    <script src="script/listen.js"></script>
+    <script src="script/tab.js"></script>
+    <script src="script/home.js"></script>
+    <script src="script/common.js"></script>
+    <style>
+        /* Ensure the font is Inter */
+        /** 图标字体 **/
+        @font-face {
+            font-family: 'layui-icon';
+            src: url('./font/iconfont.eot?v=282');
+            src: url('./font/iconfont.eot?v=282#iefix') format('embedded-opentype'),
+            url('./font/iconfont.woff2?v=282') format('woff2'),
+            url('./font/iconfont.woff?v=282') format('woff'),
+            url('./font/iconfont.ttf?v=282') format('truetype'),
+            url('./font/iconfont.svg?v=282#layui-icon') format('svg');
+        }
+
+        .layui-icon{
+            font-family:"layui-icon" !important;
+            font-size: 16px;
+            font-style: normal;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .text-last-right {
+            text-align-last: right;
+        }
+        .layui-icon-tips:before{content:"\e702"}
+        .layui-icon-github:before{content:"\e6a7"}
+        .layui-icon-close:before{content:"\1006"}
+        .layui-icon-history:before{
+            content:"\e68d";
+            font-size: 22px;}
+
+        .clamp-2 {
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 h-screen">
+<div id="main" class="container px-2 max-w-full h-full flex flex-col">
+    <header class="items-center justify-between py-1 flex">
+        <div class="items-center">
+        </div>
+        <div class="flex px-2">
+            <i id="tips" class="layui-icon layui-icon-tips"></i>
+            <a id="github" href="#" class="ml-6 block text-slate-400 hover:text-slate-500 dark:hover:text-slate-300">
+                <i class="layui-icon layui-icon-github"></i></a>
+        </div>
+    </header>
+    <main class="h-full block flex-grow">
+        <div class="flex h-full">
+            <section class="w-full pl-1 h-full flex-grow">
+                <div class="bg-white p-1 rounded shadow  h-inherit flex flex-col" >
+                    <!-- Tabs -->
+                    <ul id="tabs" class="flex border-b py-1">
+                        <li id="tab-home" class="mr-1 shadow rounded-md justify-center">
+                            <div class="flex px-4">
+                                <a onclick="display_tab('home')" class="bg-white inline-block py-2 px-1" href="#">
+                                    home</a>
+                            </div>
+                        </li>
+                    </ul>
+                    <!-- Tab Content -->
+                    <div id="tabs-content" class="text-xs tab-content p-0.5 block bg-gray-100 flex-grow">
+                        <div id="tab-content-home" class="tab-pane active block bg-white h-full">
+                            <div>
+                                <button id="new" onclick="home_new()" class="m-1 bg-yellow-500 py-1 px-2 rounded mr-1">
+                                    new
+                                </button>
+                            </div>
+                            <table id="home" class="table table-xs table-pin-rows table-pin-cols">
+                                <thead>
+                                <tr>
+                                    <th class="w-12 text-center">version</th>
+                                    <th class="w-36 text-center">name</th>
+                                    <th>tls</th>
+                                    <th>addr</th>
+                                    <th>action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+</div>
+<div id="modal" class="fixed right-0 w-96 h-full z-50 hidden">
+    <form id="info" class="p-2 bg-white shadow-md rounded h-5/6 overflow-y-auto text-xs">
+        <input class="input input-bordered input-xs flex-grow hidden" aria-label="id" name="id" id="id" type="text">
+        <div class="flex mb-2">
+            <label class="w-24" for="name">
+                alias
+            </label>
+            <input class="input input-bordered input-xs flex-grow" name="name" id="name" type="text">
+        </div>
+        <div class="flex mb-2">
+            <label class="w-24" for="client_id">
+                client-id
+            </label>
+            <input class="input input-bordered input-xs flex-grow" name="client_id" id="client_id" type="text">
+        </div>
+        <div class="flex items-center mb-2">
+            <label class="w-24" for="auto_connect">
+                auto connect
+            </label>
+            <input class="checkbox checkbox-xs" id="auto_connect" name="auto_connect" type="checkbox" checked>
+        </div>
+        <div class="flex items-center mb-2">
+            <label class="w-24" for="credential">
+                credential
+            </label>
+            <input class="checkbox checkbox-xs" id="credential" name="credential" type="checkbox">
+        </div>
+        <div class="flex mb-2 hidden" id="user_name_div" >
+            <label class="w-24" for="user_name">
+                user name
+            </label>
+            <input id="user_name" name="user_name"  class="input input-bordered input-xs flex-grow" type="text">
+        </div>
+        <div class="flex mb-2 hidden" id="password_div" >
+            <label class="w-24" for="password">
+                password
+            </label>
+            <input id="password" name="password"  class="input input-bordered input-xs flex-grow" type="text">
+        </div>
+        <div class="flex items-center mb-2">
+            <label class="w-24">
+                version
+            </label>
+            <input class="radio radio-xs" id="version-v3" type="radio" name="version" value="v4" checked>
+            <label id="version-v3-label" for="version-v3" class="mr-2 px-2">v4</label>
+            <input class="radio radio-xs" id="version-v5" type="radio" name="version" value="v5">
+            <label id="version-v5-label" for="version-v5" class="mr-2 px-2">v5</label>
+        </div>
+        <div class="flex items-center mb-2">
+            <label class="w-24">
+                tls server
+            </label>
+            <div class="flex-grow">
+                <div class="flex items-center mb-2" title="TCP connection">
+                    <input id="tls-none" class="radio radio-xs" type="radio" name="tls" value="none" checked>
+                    <label id="tls-none-label" class="mr-2 px-2 w-full" for="tls-none">none</label>
+                </div>
+                <div class="flex items-center mb-2" title="Tls connection and through CA verification of the server">
+                    <input id="tls-ca" class="radio radio-xs"  type="radio" name="tls" value="ca">
+                    <label id="tls-ca-label" class="mr-2 px-2 w-full" for="tls-ca">ca</label>
+                </div>
+                <div class="flex items-center mb-2" title="Tls connection and not verifying the server">
+                    <input id="tls-insecurity" class="radio radio-xs" type="radio" name="tls" value="insecurity">
+                    <label id="tls-insecurity-label" class="mr-2 px-2 w-full" for="tls-insecurity">insecurity</label>
+                </div>
+                <div class="flex items-center mb-2" title="Tls connection and through self-signed certificate verification of the server">
+                    <input id="tls-self-signed" class="radio radio-xs" type="radio" name="tls" value="self_signed">
+                    <label id="tls-self-signed-label" class="mr-2 px-2 w-full" for="tls-self-signed">self-signed</label>
+                </div>
+            </div>
+        </div>
+        <div class="flex items-center mb-2" id="self_signed_ca_div">
+            <label class="w-24" for="self_signed_ca">self-signed-ca</label>
+            <input readonly id="self_signed_ca" name="self_signed_ca"  class="input input-bordered input-xs flex-grow" type="text">
+        </div>
+        <div class="flex items-center mb-2">
+            <label class="w-24" for="params" >
+                params
+            </label>
+            <textarea class="textarea textarea-bordered textarea-xs h-56  flex-grow" name="params" id="params" rows="6"></textarea>
+        </div>
+        <div class="flex items-center justify-center">
+            <button onclick="check_then_save()" type="button" id="save" class="m-1 bg-yellow-500 py-1 px-2 rounded mr-1">
+                save
+            </button>
+        </div>
+    </form>
+</div>
+
+<div id="tips-msg" class="fixed right-0 w-130 h-20 z-50 text-xs p-2 border-2 bg-white shadow-md">
+    <pre id="tips-msg-pre"></pre>
+</div>
+</body>
+<script>
+    loading();
+</script>
+</html>
