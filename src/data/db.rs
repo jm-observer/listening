@@ -1,31 +1,27 @@
-use anyhow::Result;
+use anyhow::{anyhow, Result};
 
-use sled::{Config, Db};
 use std::path::PathBuf;
+use sqlx::SqlitePool;
 use crate::data::hierarchy::App;
 
 #[derive(Clone, Debug)]
 pub struct ArcDb {
-    pub index: usize,
-    pub db: Db,
-    pub ids: Vec<usize>,
+    pub db: SqlitePool,
 }
 
 impl ArcDb {
-    pub fn init_db(db_path: PathBuf) -> Result<Self> {
-        let config = Config::new().path(db_path);
+    pub async fn init_db(db_path: PathBuf) -> Result<Self> {
+        if !db_path.exists() {
+            tokio::fs::File::create(db_path.as_path()).await?;
+        }
+        let db_path_str = db_path.to_str().ok_or(anyhow!("db path ({:?}) to str fail", db_path.as_path()))?;
+        let db_url = format!("sqlite:{}", db_path_str);
+        // println!("db path: {}, db url: {}", db_path_str, db_url);
+        let db = SqlitePool::connect(db_url.as_str()).await?;
         Ok(ArcDb {
-            index: 0,
-            db: config.open()?,
-            ids: Default::default(),
+            db
         })
     }
-
-    pub fn next_broker_id(&mut self) -> usize {
-        self.index += 1;
-        self.index
-    }
-
 
     pub fn read_app_data(&mut self, home_path: PathBuf) -> Result<App> {
         let commit = env!("GIT_COMMIT", "error");

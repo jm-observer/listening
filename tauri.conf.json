@@ -7,7 +7,7 @@
     "withGlobalTauri": true
   },
   "package": {
-    "productName": "for-mqttc",
+    "productName": "listening",
     "version": "0.2.0"
   },
   "tauri": {
@@ -20,12 +20,15 @@
         "open": true
       },"clipboard": {
         "writeText": true
+      },"fs": {
+        "scope": ["$HOME\\listening\\**"],
+        "readFile": true
       }
     },
     "bundle": {
       "active": true,
       "targets": "all",
-      "identifier": "for-mqttc",
+      "identifier": "listening",
       "icon": [
         "icons/32x32.png",
         "icons/128x128.png",
@@ -41,7 +44,7 @@
       {
         "fullscreen": false,
         "resizable": true,
-        "title": "for-mqttc",
+        "title": "listening",
         "width": 800,
         "height": 600
       }

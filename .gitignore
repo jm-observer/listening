@@ -16,3 +16,4 @@ node_modules
 .idea
 src-web/test.html
 output.css
+resource/db

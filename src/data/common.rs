@@ -12,7 +12,7 @@ impl Default for Id {
     }
 }
 
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 pub struct Config {
     pub debug: bool,
 }
@@ -41,11 +41,5 @@ impl Config {
     fn _update(self, file_path: PathBuf) -> Result<()> {
         std::fs::write(file_path, serde_json::to_string(&self)?)?;
         Ok(())
-    }
-}
-
-impl Default for Config {
-    fn default() -> Self {
-        Self { debug: false }
     }
 }

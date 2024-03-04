@@ -20,6 +20,6 @@ type Result<T> = std::result::Result<T, Error>;
 
 #[command]
 pub async fn loading(state: State<'_, ArcApp>) -> Result<ViewConfig> {
-    let mut app = state.write().await;
+    let app = state.read().await;
     Ok(ViewConfig::init(&app, &Config::init(app.home_path.clone())))
 }
