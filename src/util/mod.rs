@@ -1,4 +1,8 @@
+pub fn app_name() -> &'static str {
+    "listening"
+}
 
-
-
-pub const APP: &str = "listening";
+#[inline]
+pub fn resource_path() -> &'static str {
+    "listening\\resource"
+}

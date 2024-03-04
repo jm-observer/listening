@@ -1,8 +1,10 @@
 use anyhow::{anyhow, Result};
 
-use std::path::PathBuf;
-use sqlx::SqlitePool;
 use crate::data::hierarchy::App;
+use crate::data::WordDb;
+use log::warn;
+use sqlx::SqlitePool;
+use std::path::PathBuf;
 
 #[derive(Clone, Debug)]
 pub struct ArcDb {
@@ -14,13 +16,13 @@ impl ArcDb {
         if !db_path.exists() {
             tokio::fs::File::create(db_path.as_path()).await?;
         }
-        let db_path_str = db_path.to_str().ok_or(anyhow!("db path ({:?}) to str fail", db_path.as_path()))?;
+        let db_path_str = db_path
+            .to_str()
+            .ok_or(anyhow!("db path ({:?}) to str fail", db_path.as_path()))?;
         let db_url = format!("sqlite:{}", db_path_str);
         // println!("db path: {}, db url: {}", db_path_str, db_url);
         let db = SqlitePool::connect(db_url.as_str()).await?;
-        Ok(ArcDb {
-            db
-        })
+        Ok(ArcDb { db })
     }
 
     pub fn read_app_data(&mut self, home_path: PathBuf) -> Result<App> {
@@ -36,5 +38,35 @@ impl ArcDb {
             home_path,
             hint,
         })
+    }
+
+    pub async fn query_review_words(&self, next_time: i32, limit: i32) -> Result<Vec<WordDb>> {
+        let rs = sqlx::query!(
+            r#"
+        SELECT word_id as "word_id!",word as "word!", zpk_path  from words w WHERE w.word_id in (
+            SELECT word_id  from learned_word lw WHERE next_time < ? ORDER by next_time  limit ?)
+        "#,
+            next_time,
+            limit
+        )
+        .fetch_all(self.db.acquire().await?.as_mut())
+        .await?;
+        let mut records = Vec::with_capacity(limit as usize);
+        for word in rs {
+            let Some(zpk_path) = word
+                .zpk_path
+                .map(|x| x.replace("\\/r\\/", "").replace("\\.zpk", ""))
+            else {
+                warn!("{}({}) zpk_path is none", word.word, word.word_id);
+                continue;
+            };
+            let word = WordDb {
+                word_id: word.word_id,
+                word: word.word,
+                zpk_path,
+            };
+            records.push(word);
+        }
+        Ok(records)
     }
 }

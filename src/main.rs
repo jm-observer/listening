@@ -1,22 +1,23 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
-use data::db::ArcDb;
 use custom_utils::logger::*;
+use data::db::ArcDb;
 use directories::UserDirs;
 use log::LevelFilter::{Debug, Info};
 use tokio::sync::RwLock;
 
+mod command;
 mod data;
 mod util;
-mod command;
 
 use command::*;
-use util::APP;
+
+use crate::util::app_name;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     let user_dirs = UserDirs::new().unwrap();
-    let home_path = user_dirs.home_dir().to_path_buf().join(APP);
+    let home_path = user_dirs.home_dir().to_path_buf().join(app_name());
 
     if !home_path.exists() {
         std::fs::create_dir_all(home_path.as_path())?;
@@ -24,7 +25,7 @@ async fn main() -> anyhow::Result<()> {
     let fs_path = home_path.clone();
     let fs = FileSpec::default()
         .directory(fs_path)
-        .basename(APP)
+        .basename(app_name())
         .suffix("log");
     // 若为true，则会覆盖rotate中的数字、keep^
     let criterion = Criterion::AgeOrSize(Age::Day, 10_000_000);
@@ -33,7 +34,7 @@ async fn main() -> anyhow::Result<()> {
     let append = true;
 
     let _logger = custom_utils::logger::logger_feature_with_path(
-        "listening",
+        app_name(),
         Debug,
         Info,
         home_path.clone(),
@@ -62,9 +63,7 @@ async fn main() -> anyhow::Result<()> {
 
     tauri::Builder::default()
         .manage(RwLock::new(data))
-        .invoke_handler(tauri::generate_handler![
-            loading
-        ])
+        .invoke_handler(tauri::generate_handler![loading, review_info])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 

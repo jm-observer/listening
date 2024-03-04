@@ -6,6 +6,7 @@ pub struct Error {
     msg: String,
 }
 
+#[allow(dead_code)]
 impl Error {
     pub fn init_rs<T>(msg: impl Into<String>) -> Result<T, Self> {
         Err(Error { msg: msg.into() })
@@ -38,6 +39,14 @@ impl From<std::io::Error> for Error {
 
 impl From<serde_json::Error> for Error {
     fn from(value: serde_json::Error) -> Self {
+        Self {
+            msg: value.to_string(),
+        }
+    }
+}
+
+impl From<tokio::task::JoinError> for Error {
+    fn from(value: tokio::task::JoinError) -> Self {
         Self {
             msg: value.to_string(),
         }
