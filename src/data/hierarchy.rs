@@ -3,7 +3,7 @@ use std::path::PathBuf;
 
 pub struct App {
     pub db: ArcDb,
-    pub home_path: PathBuf,
+    pub app_home_path: PathBuf,
     pub hint: String,
 }
 impl App {

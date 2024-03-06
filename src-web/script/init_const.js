@@ -26,6 +26,33 @@ const dialog_open = isTauriEnvironment() ?
     function () {
     };
 
+
+const homeDir = isTauriEnvironment() ?
+    window.__TAURI__.path.homeDir:
+    async function () {};
+
+const base_home = isTauriEnvironment() ?
+    window.__TAURI__.fs.BaseDirectory.Home:
+    11;
+
+const _readBinaryFile = isTauriEnvironment() ?
+    window.__TAURI__.fs.readBinaryFile:
+    function () {
+    };
+
+const join = isTauriEnvironment() ?
+    window.__TAURI__.path.join:
+    async function () {
+    };
+
+async function readBinaryFile(path) {
+    try {
+        return await _readBinaryFile(path, { dir: base_home })
+    } catch (error) {
+        console.error('Error readBinaryFile file:', path);
+    }
+}
+
 async function loading() {
     init_info();
     document.getElementById('github').addEventListener('click', function() {
@@ -44,6 +71,12 @@ async function loading() {
             event.preventDefault(); // 阻止默认的右键菜单
         });
     }
+
+    document.getElementById('to_review').addEventListener('click', function(event) {
+        event.stopPropagation();
+        to_review()
+    });
+
 }
 
 function display_info() {

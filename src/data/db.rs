@@ -35,7 +35,7 @@ impl ArcDb {
         );
         Ok(App {
             db: self.clone(),
-            home_path,
+            app_home_path: home_path,
             hint,
         })
     }
@@ -63,7 +63,7 @@ impl ArcDb {
             let word = WordDb {
                 word_id: word.word_id,
                 word: word.word,
-                zpk_name: zpk_name,
+                zpk_name,
             };
             records.push(word);
         }

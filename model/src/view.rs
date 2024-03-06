@@ -1,8 +1,9 @@
 use std::path::PathBuf;
+use anyhow::anyhow;
 use serde::{Deserialize, Serialize};
 use crate::db::WordDb;
 use crate::resource::{Sentence, WordInfo, WordResource};
-use crate::resource_path;
+use crate::{get_mime_type, resource_path};
 
 #[derive(Serialize, Deserialize)]
 pub struct WordResourceView {
@@ -14,8 +15,10 @@ pub struct WordResourceView {
 }
 
 impl WordResourceView {
-    pub async fn init(word_db: WordDb, home_path: PathBuf) -> anyhow::Result<Self> {
-        let resource = word_db.resource(home_path).await?;
+    pub async fn init(word_db: WordDb, app_home_path: PathBuf) -> anyhow::Result<Self> {
+        let zk_path = word_db.zpk_path(app_home_path.clone());
+        let zk_path_str = zk_path.as_os_str().to_str().ok_or(anyhow!("zk_path to string fail"))?;
+        let resource = word_db.resource(app_home_path.clone()).await?;
         let WordResource {
             word,
             cn_mean,
@@ -26,7 +29,7 @@ impl WordResourceView {
         let word = WordInfoView::init(word, resource_path(), word_db.zpk_name.as_str());
         let sentences: Vec<SentenceView> = sentences
             .into_iter()
-            .map(|x| SentenceView::init(x, resource_path(), word_db.zpk_name.as_str()))
+            .map(|x| SentenceView::init(x, zk_path_str))
             .collect();
         let cn_mean: Vec<String> = cn_mean.iter().map(|x| x.to_string()).collect();
         let en_mean: Vec<String> = en_mean.iter().map(|x| x.to_string()).collect();
@@ -38,6 +41,12 @@ impl WordResourceView {
             sentences, image
         })
     }
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct ImageView {
+    pub path: String,
+    pub extend: String,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -74,9 +83,9 @@ pub struct SentenceView {
 }
 
 impl SentenceView {
-    pub fn init(sentence: Sentence, dir: &str, zpk_name: &str) -> Self {
-        let audio = format!("{}\\{}\\{}", dir, zpk_name, sentence.audio);
-        let image: Option<String> = sentence.image.map(|x| format!("{}\\{}\\{}", dir, zpk_name, x));
+    pub fn init(sentence: Sentence, dir: &str) -> Self {
+        let audio = format!("{}\\{}", dir, sentence.audio);
+        let image: Option<String> = sentence.image.map(|x| format!("{}\\{}", dir, x));
         Self {
             sentence: sentence.sentence_en,
             translate: sentence.translate,

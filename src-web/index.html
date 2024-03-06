@@ -10,6 +10,7 @@
     <script src="script/tab.js"></script>
     <script src="script/home.js"></script>
     <script src="script/common.js"></script>
+    <script src="script/review.js"></script>
     <style>
         /* Ensure the font is Inter */
         /** 图标字体 **/
@@ -42,6 +43,12 @@
         .layui-icon-history:before{
             content:"\e68d";
             font-size: 22px;}
+        .layui-icon-voice:before{content:"\e688";
+            font-family:"layui-icon" !important;
+            font-size: 12px;
+            font-style: normal;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;}
 
         .clamp-2 {
             display: -webkit-box;
@@ -51,7 +58,7 @@
         }
     </style>
 </head>
-<body class="bg-gray-100 h-screen">
+<body class="bg-gray-100 h-screen text-base">
 <div id="main" class="container px-2 max-w-full h-full flex flex-col">
     <header class="items-center justify-between py-1 flex">
         <div class="items-center">
@@ -78,7 +85,7 @@
                     <!-- Tab Content -->
                     <div id="tabs-content" class="text-xs tab-content p-0.5 block bg-gray-100 flex-grow">
                         <div id="tab-content-home" class="tab-pane active block bg-white h-full">
-                            <button onclick="to_review()" type="button" id="to_review" class="m-1 bg-yellow-500 py-1 px-2 rounded mr-1">
+                            <button type="button" id="to_review" class="m-1 bg-yellow-500 py-1 px-2 rounded mr-1">
                                 review
                             </button>
                             <audio id="audioPlayer_mp3" controls></audio>
@@ -86,6 +93,7 @@
 
                             <audio id="audioPlayer_acc" controls></audio>
                             <button id="playButton_acc">Play AAC</button>
+                            <img id="img_id"/>
                         </div>
                     </div>
                 </div>
@@ -188,6 +196,15 @@
 </body>
 <script>
     loading();
+    image();
+    async function image() {
+        const appDataDirPath = await window.__TAURI__.path.homeDir();
+        const filePath = await window.__TAURI__.path.join(appDataDirPath, '287760be7334358954d17d86b5985f10_189312_1595857031.jpg');
+        console.log(filePath);
+        const assetUrl = await window.__TAURI__.tauri .convertFileSrc(filePath);
+        console.log(assetUrl);
+        document.getElementById('img_id').src = assetUrl;
+    }
 
 
     document.getElementById('playButton_mp3').addEventListener('click', async () => {

@@ -23,7 +23,7 @@ type Result<T> = std::result::Result<T, Error>;
 #[command]
 pub async fn loading(state: State<'_, ArcApp>) -> Result<ViewConfig> {
     let app = state.read().await;
-    Ok(ViewConfig::init(&app, &Config::init(app.home_path.clone())))
+    Ok(ViewConfig::init(&app, &Config::init(app.app_home_path.clone())))
 }
 
 #[command]
@@ -33,7 +33,7 @@ pub async fn review_info(state: State<'_, ArcApp>) -> Result<Vec<WordResourceVie
     let words = app.db.query_review_words(now, 40).await?;
     let mut view_tasks = Vec::with_capacity(words.len());
     for word in words {
-        let home_path = app.home_path.clone();
+        let home_path = app.app_home_path.clone();
         view_tasks.push(tokio::spawn(WordResourceView::init(word, home_path)));
     }
     let mut rs = Vec::with_capacity(view_tasks.len());

@@ -5,37 +5,6 @@ function to_review() {
     let _ = _to_review("review", "review");
 }
 
-async function _to_review(id, name) {
-    const tableBody = document.getElementById("tabs");
-    const tab = document.getElementById("tab-" + id);
-    if(!tab) {
-        const tab = init_tab(id, name);
-        tableBody.appendChild(tab);
-        fetch('connecting_template.html')
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.text();
-            })
-            .then(htmlString => {
-                var parser = new DOMParser();
-                let content = htmlString.replaceAll("__id__", id);
-                var doc = parser.parseFromString(content, 'text/html');
-                return doc.body.children[0]; // 或者 doc.documentElement，视情况而定
-            })
-            .then(htmlElement => {
-                var targetElement = document.getElementById('tabs-content'); // 目标元素
-                targetElement.appendChild(htmlElement);
-            })
-            .catch(error => {
-                console.error('There has been a problem with your fetch operation:', error);
-            });
-        let words = await invoke("review_info");
-        console.log(words);
-    }
-    display_tab(id);
-}
 
 async function select_file() {
     const selected = await dialog_open({

@@ -4,7 +4,7 @@ function init_tab(id, name) {
         "                                <a onclick='display_tab(\"__id__\")' class='items-center bg-white py-2 px-1 flex' href='#'>\n" +
         "                                    <span id='status-__id__' class='h-3 w-3 bg-gray-400 rounded-full mr-2'></span>\n" +
         "                                    #name#</a>\n" +
-        "                                <a onclick='close_tab(__id__)' class='items-center bg-white px-1 pb-1 pt-1.5  hover:text-teal-800 flex'><i class='layui-icon layui-icon-close'></i></a>\n" +
+        "                                <a onclick='close_tab(\"__id__\")' class='items-center bg-white px-1 pb-1 pt-1.5  hover:text-teal-800 flex'><i class='layui-icon layui-icon-close'></i></a>\n" +
         "                            </div>\n" +
         "                        </li>";
 

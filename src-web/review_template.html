@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head ><title>template</title>
+    <meta charset="UTF-8"></head>
+<body>
+<div id="tab-content-__id__" class="tab-pane h-full w-full w-1/2">
+    <div class="p-2">
+        <button id="review_listening" type="button" class="m-1 bg-yellow-500 py-1 px-2 rounded mr-1 text-sm">review</button>
+    </div>
+    <div class="flex flex-col items-center justify-center p-2">
+        <div><input id="review_index" value="0" class="hidden"></div>
+        <div class="p-2"><img id="review_image" class="h-60 w-80" src=""> </div>
+
+        <div class="p-2">
+            <span id="review_word" class="text-2xl font-bold"></span>
+        </div>
+        <div id="accent" class="p-2 text-xs flex justify-center items-center">
+            <div class="bg-gray-300 w-10 flex justify-center items-center rounded">
+                <span class="p-1">美</span><i class="layui-icon-voice"></i>
+            </div>
+            <span id="review_accent" class="text-gray-400 px-2"></span>
+        </div>
+        <div id="review_cn_mean" class="p-2 text-sm">
+        </div>
+    </div>
+
+</div>
+</body>
+<script>
+    let word = {
+        "word": {
+            "word_id": 4493,
+            "word": "ease",
+            "accent_us": "/iːz/",
+            "accent_uk": "/iːz/",
+            "audio_us": "C:\\Users\\36225\\listening\\resource\\zp_4493_410_0_20231227111738\\us_ease_20231102110414283_3bd2f210a82085768ddb.mp3",
+            "audio_uk": "C:\\Users\\36225\\listening\\resource\\zp_4493_410_0_20231227111738\\uk_ease_20231226182629934_9b659dcb3750984efdbc.mp3"
+        },
+        "cn_mean": [
+            "n.\t轻松",
+            "n.\t安逸",
+            "n.\t不拘束",
+            "n.\t舒适",
+            "n.\t容易",
+            "n.\t自在",
+            "v.\t解除痛苦",
+            "v.\t缓解",
+            "v.\t顺利进出",
+            "v.\t（使）宽慰",
+            "v.\t减轻",
+            "v.\t放松"
+        ],
+        "en_mean": [
+            "n.\tlack of difficulty"
+        ],
+        "sentences": [
+            {
+                "sentence": "The strong man can lift the rock with ease compared to the other man.",
+                "translate": "与另一个男人相比，这个强壮的男人可以轻松地举起石头。",
+                "audio": "listening\\resource\\zp_4493_410_0_20231227111738\\e3e01a8917422daeb68b491d8428d513_42718_1599461089.mp3",
+                "image": "listening\\resource\\zp_4493_410_0_20231227111738\\287760be7334358954d17d86b5985f10_189312_1595857031.jpg"
+            }
+        ],
+        "image": "C:\\Users\\36225\\listening\\resource\\zp_4493_410_0_20231227111738\\287760be7334358954d17d86b5985f10_189312_1595857031.jpg"
+    };
+</script>
+</html>

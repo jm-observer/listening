@@ -23,6 +23,13 @@
       },"fs": {
         "scope": ["$HOME\\listening\\**"],
         "readFile": true
+      },
+      "path": {
+        "all": true
+      },
+      "protocol": {
+        "asset": true,
+        "assetScope": ["$HOME\\**"]
       }
     },
     "bundle": {
@@ -38,10 +45,11 @@
       ]
     },
     "security": {
-      "csp": null
+      "csp": "img-src 'self' asset: https://asset.localhost; script-src 'unsafe-inline'"
     },
     "windows": [
       {
+        "label": "main",
         "fullscreen": false,
         "resizable": true,
         "title": "listening",

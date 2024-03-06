@@ -172,26 +172,71 @@ pub struct WordResource {
     pub similars: Vec<Similar>,
 }
 
+
 #[cfg(test)]
 mod test {
+    // use std::collections::HashMap;
+    // use std::ffi::OsStr;
+    // use std::path::PathBuf;
     use tokio::fs;
-    use crate::resource::WordResource;
+    use crate::resource::{WordResource};
+    use crate::get_mime_type;
+
+    #[test]
+    fn test_mime_type() {
+        assert_eq!(get_mime_type("abd.jpg").unwrap(), "image/jpeg".to_string());
+        assert!(get_mime_type("fjpg").is_err());
+    }
 
     #[tokio::test]
     async fn test_serde() {
         let mut dirs = tokio::fs::read_dir("D:\\u_unpack").await.unwrap();
         let mut pack_num= 0;
+        // let mut tys = HashMap::new();
+        // let mut path_extensions = HashMap::new();
         while let Some(pack) = dirs.next_entry().await.unwrap() {
             let Ok(data) = fs::read(pack.path().join("resource.json")).await else {
                 println!("{:?} resource.json read fail", pack.file_name());
                 continue;
             };
-            if let Err(e) = serde_json::from_slice::<WordResource>(data.as_ref()) {
-                println!("{:?} \n{:?}", pack.file_name(), e);
-                break;
+            match serde_json::from_slice::<WordResource>(data.as_ref()) {
+                Err(e) => {
+                    println!("{:?} \n{:?}", pack.file_name(), e);
+                    break;
+                }
+                Ok(_rs) => {
+                    // for x in _rs.sentences {
+                    //     let Some(image) = &x.image else {
+                    //         continue;
+                    //     };
+                    //     let image_path = pack.path().join(image);
+                    //     let kind = infer::get_from_path(&image_path)
+                    //         .expect("file read successfully")
+                    //         .expect("file type is known");
+                    //     let mime_type = kind.mime_type().to_string();
+                    //     let extension = kind.extension().to_string();
+                    //     let path_extension = image_path.extension().unwrap().to_str().unwrap();
+                    //     path_extensions.insert(path_extension.to_string(), true);
+                    //     if let Some(old_extension) = tys.insert(mime_type, extension.clone()) {
+                    //         if !(old_extension == extension) {
+                    //             println!("{} {}", old_extension, extension);
+                    //         }
+                    //     }
+                    // }
+                }
             }
             pack_num += 1;
         }
+        // for (key, val) in tys {
+        //     println!("{} {}", key, val);
+        // }
+        // for (key, _) in path_extensions {
+        //     println!("{}", key);
+        // }
         println!("pack_num: {}", pack_num);
     }
+
+
 }
+
+
