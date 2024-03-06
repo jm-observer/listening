@@ -1,7 +1,7 @@
 use anyhow::{anyhow, Result};
 
 use crate::data::hierarchy::App;
-use crate::data::WordDb;
+use model::db::WordDb;
 use log::warn;
 use sqlx::SqlitePool;
 use std::path::PathBuf;
@@ -40,10 +40,10 @@ impl ArcDb {
         })
     }
 
-    pub async fn query_review_words(&self, next_time: i32, limit: i32) -> Result<Vec<WordDb>> {
+    pub async fn query_review_words(&self, next_time: i64, limit: i32) -> Result<Vec<WordDb>> {
         let rs = sqlx::query!(
             r#"
-        SELECT word_id as "word_id!",word as "word!", zpk_path  from words w WHERE w.word_id in (
+        SELECT word_id as "word_id!",word as "word!", zpk_name  from words w WHERE w.word_id in (
             SELECT word_id  from learned_word lw WHERE next_time < ? ORDER by next_time  limit ?)
         "#,
             next_time,
@@ -53,8 +53,8 @@ impl ArcDb {
         .await?;
         let mut records = Vec::with_capacity(limit as usize);
         for word in rs {
-            let Some(zpk_path) = word
-                .zpk_path
+            let Some(zpk_name) = word
+                .zpk_name
                 .map(|x| x.replace("\\/r\\/", "").replace("\\.zpk", ""))
             else {
                 warn!("{}({}) zpk_path is none", word.word, word.word_id);
@@ -63,7 +63,7 @@ impl ArcDb {
             let word = WordDb {
                 word_id: word.word_id,
                 word: word.word,
-                zpk_path,
+                zpk_name: zpk_name,
             };
             records.push(word);
         }

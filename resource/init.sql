@@ -1,8 +1,8 @@
 CREATE TABLE if not EXISTS words (
-	word_id INTEGER PRIMARY KEY NOT NULL,
-	word TEXT NOT NULL,
-	zpk_path TEXT
-);
+      word_id INTEGER PRIMARY KEY NOT NULL,
+      word TEXT NOT NULL,
+      zpk_path TEXT
+    , zpk_name TEXT);
 
 CREATE TABLE if not EXISTS learn_plan (
 	id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
@@ -32,7 +32,7 @@ ATTACH DATABASE 'D:\\baicizhan\\baicizhantopicproblem.db' AS learned;
 INSERT INTO words (word_id, word, zpk_path)
 SELECT d.topic_id , d.word , bt.zpk_path  FROM lookup.dict_view d left join baicizhantopic.topic_resource_410 bt  on d.topic_id = bt.topic
 ;
-
+UPDATE words set zpk_name = REPLACE(REPLACE(zpk_path, "/r/", ""), ".zpk", "") where zpk_path is not null;
 
 INSERT INTO learned_word (word_id, start_time, last_time, next_time, err_times, total_learned_times, current_learned_times)
 SELECT lt.topic_id , lt.create_at / 1000, lt.create_at / 1000, 1709456431 + lt.topic_day , 0, 1, 1 
