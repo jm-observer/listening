@@ -88,12 +88,6 @@
                             <button type="button" id="to_review" class="m-1 bg-yellow-500 py-1 px-2 rounded mr-1">
                                 review
                             </button>
-                            <audio id="audioPlayer_mp3" controls></audio>
-                            <button id="playButton_mp3">Play MP3</button>
-
-                            <audio id="audioPlayer_acc" controls ></audio>
-                            <button id="playButton_acc">Play AAC</button>
-                            <img id="img_id"/>
                         </div>
                     </div>
                 </div>
@@ -195,54 +189,8 @@
 </div>
 </body>
 <script>
-    loading();
-    image();
-    async function image() {
-        const appDataDirPath = await window.__TAURI__.path.homeDir();
-        const filePath = await window.__TAURI__.path.join(appDataDirPath, '287760be7334358954d17d86b5985f10_189312_1595857031.jpg');
-        console.log(filePath);
-        const assetUrl = await window.__TAURI__.tauri .convertFileSrc(filePath);
-        console.log(assetUrl);
-        document.getElementById('img_id').src = assetUrl;
-    }
-
-
-    document.getElementById('playButton_mp3').addEventListener('click', async () => {
-        try {
-            // 路径应该是相对于 `src-tauri/tauri.conf.json` 文件中配置的 `tauri > filesystem > resources` 目录的路径
-            // 从 Tauri API 读取 AAC 文件('avatar.png', { dir: BaseDirectory.Resource })
-            const base = window.__TAURI__.fs.BaseDirectory.Home;
-            const mp3Data = await window.__TAURI__.fs.readBinaryFile('listening\\zp_123_13_0_7_161221162435\\allot.mp3', { dir: base });
-            // 将二进制数据转换为 Blob
-            const blob = new Blob([mp3Data], { type: 'audio/mpeg' });
-            // 创建 URL
-            const url = URL.createObjectURL(blob);
-            // 设置音频源并播放
-            const audioPlayer = document.getElementById('audioPlayer_mp3');
-            audioPlayer.src = url;
-            audioPlayer.play();
-        } catch (error) {
-            console.error('Error playing AAC file:', error);
-        }
-    });
-
-    document.getElementById('playButton_acc').addEventListener('click', async () => {
-        try {
-            // 路径应该是相对于 `src-tauri/tauri.conf.json` 文件中配置的 `tauri > filesystem > resources` 目录的路径
-            // 从 Tauri API 读取 AAC 文件('avatar.png', { dir: BaseDirectory.Resource })
-            const base = window.__TAURI__.fs.BaseDirectory.Home;
-            const aacData = await window.__TAURI__.fs.readBinaryFile('listening\\zp_123_13_0_7_161221162435\\3_0_20161019070626_17575_c.aac', { dir: base });
-            // 将二进制数据转换为 Blob
-            const blob = new Blob([aacData], { type: 'audio/aac' });
-            // 创建 URL
-            const url = URL.createObjectURL(blob);
-            // 设置音频源并播放
-            const audioPlayer = document.getElementById('audioPlayer_acc');
-            audioPlayer.src = url;
-            audioPlayer.play();
-        } catch (error) {
-            console.error('Error playing AAC file:', error);
-        }
+    document.addEventListener('DOMContentLoaded', () => {
+        loading();
     });
 
 </script>

@@ -26,11 +26,13 @@ pub async fn loading(state: State<'_, ArcApp>) -> Result<ViewConfig> {
     Ok(ViewConfig::init(&app, &Config::init(app.app_home_path.clone())))
 }
 
+
+
 #[command]
 pub async fn review_info(state: State<'_, ArcApp>) -> Result<Vec<WordResourceView>> {
     let app = state.read().await;
     let now = chrono::Local::now().timestamp();
-    let words = app.db.query_review_words(now, 40).await?;
+    let words = app.db.query_review_words(now, 10).await?;
     let mut view_tasks = Vec::with_capacity(words.len());
     for word in words {
         let home_path = app.app_home_path.clone();

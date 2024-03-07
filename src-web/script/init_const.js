@@ -74,12 +74,10 @@ async function loading() {
             event.preventDefault(); // 阻止默认的右键菜单
         });
     }
-
     document.getElementById('to_review').addEventListener('click', function(event) {
         event.stopPropagation();
         to_review()
     });
-
 }
 
 function display_info() {

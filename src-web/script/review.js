@@ -1,8 +1,10 @@
 let review_words = [];
 let listening = false;
-let index = 0;
-let playCount = 0;
-
+let review_index = 0;
+let review_playCount = 0;
+let review_loop = 0;
+let timeout_id = 0;
+let timeout_id_2 = 0;
 async function _to_review(id, name) {
     const tableBody = document.getElementById("tabs");
     const tab = document.getElementById("tab-" + id);
@@ -31,24 +33,50 @@ async function _to_review(id, name) {
                     const accent_audio = document.getElementById('review_accent_audio');
                     accent_audio.play();
                 });
-
+                document.getElementById('review_listening_pause').addEventListener('click', async function(event) {
+                    const video = document.getElementById('review_accent_audio');
+                    video.pause();
+                    listening = false;
+                });
+                document.getElementById('review_previous').addEventListener('click', async function(event) {
+                    const video = document.getElementById('review_accent_audio');
+                    if(listening) {
+                        video.pause();
+                        if(review_index > 0) {
+                            review_index --;
+                        }
+                        await next_word(review_index, false);
+                        video.play();
+                    } else {
+                        if(review_index > 0) {
+                            review_index --;
+                        }
+                        if(review_index % review_words.length == 0 && review_loop > 0) {
+                            review_loop --;
+                        }
+                        await next_word(review_index, false);
+                    }
+                });
                 document.getElementById('review_listening').addEventListener('click', async function(event) {
                     event.stopPropagation();
                     if(listening) {
                         return;
                     }
-                    await init_review_word(review_words[index % review_words.length]);
                     const video = document.getElementById('review_accent_audio');
-                    playCount = 0;
                     video.onended = async () => {
-                        playCount++;
-                        if (playCount < 5) {
-                            setTimeout(() => { video.play(); }, 1000); // Wait 2 seconds before replaying
-                        } if (playCount >= 5) {
-                            index ++;
-                            playCount = 0;
-                            await init_review_word(review_words[index % review_words.length]);
-                            setTimeout(() => { video.play(); }, 3000);
+                        review_playCount++;
+                        if (review_playCount < 5) {
+                            timeout_id = setTimeout(() => {
+                                if(listening) {
+                                    video.play();
+                                }
+                                }, 1000); // Wait 2 seconds before replaying
+                        } if (review_playCount >= 5) {
+                            review_index ++;
+                            await next_word(review_index, true);
+                            timeout_id_2 = setTimeout(() => { if(listening) {
+                                video.play();
+                            }  }, 2000);
                         }
                     };
                     video.play();
@@ -60,6 +88,7 @@ async function _to_review(id, name) {
             });
     }
     await init_review_words();
+    await next_word(review_index, false);
     display_tab(id);
 }
 
@@ -107,4 +136,27 @@ async function init_review_word(word) {
 
     const index = document.getElementById("review_index");
     index.value = 0;
+}
+
+async function next_word(word_index, need_update_loop) {
+    review_playCount = 0;
+    let next_index = word_index % review_words.length;
+    await init_review_word(review_words[next_index]);
+    update_remaining_count();
+    clearTimeout(timeout_id);
+    clearTimeout(timeout_id_2);
+    if(next_index == 0 && need_update_loop) {
+        review_loop ++;
+        update_loop();
+    } else if (!need_update_loop) {
+        update_loop();
+    }
+}
+function update_loop() {
+    const word_ele = document.getElementById("looped_count");
+    word_ele.innerText = "已循环：" + review_loop;
+}
+function update_remaining_count() {
+    const word_ele = document.getElementById("remaining_count");
+    word_ele.innerText = "本次剩余：" + (review_words.length - review_index % review_words.length);
 }

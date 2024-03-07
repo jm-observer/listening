@@ -45,7 +45,8 @@
       ]
     },
     "security": {
-      "csp": "media-src asset: https://asset.localhost;img-src asset: https://asset.localhost; script-src 'unsafe-inline'"
+      "csp": "default-src self 'unsafe-inline' https://tauri.localhost;media-src asset: https://asset.localhost;img-src asset: https://asset.localhost;",
+      "devCsp": "default-src self 'unsafe-inline' https://tauri.localhost;media-src asset: https://asset.localhost;img-src asset: https://asset.localhost;"
     },
     "windows": [
       {
