@@ -82,15 +82,15 @@ async function check_then_save() {
     }
 
     if (result) {
-        try {
-            let name = formObject["name"];
-            let broker_id = await window.__TAURI__.tauri.invoke("update_or_new_broker", { broker : formObject});
-            console.log("broker_id: " + broker_id);
-            document.getElementById('modal').style.display = 'none';
-            broker_list();
-            return {broker_id, name};
-        } catch (e) {
-            console.error("Parsing error:", e);
-        }
+        // try {
+        //     let name = formObject["name"];
+        //     let broker_id = await invoke("update_or_new_broker", { broker : formObject});
+        //     console.log("broker_id: " + broker_id);
+        //     document.getElementById('modal').style.display = 'none';
+        //     broker_list();
+        //     return {broker_id, name};
+        // } catch (e) {
+        //     console.error("Parsing error:", e);
+        // }
     }
 }

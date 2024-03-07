@@ -45,7 +45,7 @@
       ]
     },
     "security": {
-      "csp": "img-src 'self' asset: https://asset.localhost; script-src 'unsafe-inline'"
+      "csp": "media-src asset: https://asset.localhost;img-src asset: https://asset.localhost; script-src 'unsafe-inline'"
     },
     "windows": [
       {

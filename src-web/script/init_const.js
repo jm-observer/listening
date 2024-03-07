@@ -26,32 +26,35 @@ const dialog_open = isTauriEnvironment() ?
     function () {
     };
 
-
-const homeDir = isTauriEnvironment() ?
-    window.__TAURI__.path.homeDir:
-    async function () {};
-
-const base_home = isTauriEnvironment() ?
-    window.__TAURI__.fs.BaseDirectory.Home:
-    11;
-
-const _readBinaryFile = isTauriEnvironment() ?
-    window.__TAURI__.fs.readBinaryFile:
-    function () {
-    };
-
-const join = isTauriEnvironment() ?
-    window.__TAURI__.path.join:
+const convertFileSrc = isTauriEnvironment() ?
+    window.__TAURI__.tauri.convertFileSrc:
     async function () {
     };
+// const homeDir = isTauriEnvironment() ?
+//     window.__TAURI__.path.homeDir:
+//     async function () {};
+//
+// const base_home = isTauriEnvironment() ?
+//     window.__TAURI__.fs.BaseDirectory.Home:
+//     11;
 
-async function readBinaryFile(path) {
-    try {
-        return await _readBinaryFile(path, { dir: base_home })
-    } catch (error) {
-        console.error('Error readBinaryFile file:', path);
-    }
-}
+// const _readBinaryFile = isTauriEnvironment() ?
+//     window.__TAURI__.fs.readBinaryFile:
+//     function () {
+//     };
+//
+// const join = isTauriEnvironment() ?
+//     window.__TAURI__.path.join:
+//     async function () {
+//     };
+//
+// async function readBinaryFile(path) {
+//     try {
+//         return await _readBinaryFile(path, { dir: base_home })
+//     } catch (error) {
+//         console.error('Error readBinaryFile file:', path);
+//     }
+// }
 
 async function loading() {
     init_info();

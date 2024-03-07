@@ -8,13 +8,16 @@
         <button id="review_listening" type="button" class="m-1 bg-yellow-500 py-1 px-2 rounded mr-1 text-sm">review</button>
     </div>
     <div class="flex flex-col items-center justify-center p-2">
-        <div><input id="review_index" value="0" class="hidden"></div>
+        <div><input id="review_index" value="0" class="hidden">
+            <audio id="review_audio" class="hidden"></audio>
+            <audio id="review_accent_audio" class="hidden"></audio>
+        </div>
         <div class="p-2"><img id="review_image" class="h-60 w-80" src=""> </div>
 
         <div class="p-2">
             <span id="review_word" class="text-2xl font-bold"></span>
         </div>
-        <div id="accent" class="p-2 text-xs flex justify-center items-center">
+        <div id="review_accent_all" class="p-2 text-xs flex justify-center items-center">
             <div class="bg-gray-300 w-10 flex justify-center items-center rounded">
                 <span class="p-1">美</span><i class="layui-icon-voice"></i>
             </div>

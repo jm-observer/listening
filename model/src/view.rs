@@ -3,7 +3,6 @@ use anyhow::anyhow;
 use serde::{Deserialize, Serialize};
 use crate::db::WordDb;
 use crate::resource::{Sentence, WordInfo, WordResource};
-use crate::{get_mime_type, resource_path};
 
 #[derive(Serialize, Deserialize)]
 pub struct WordResourceView {
@@ -26,7 +25,7 @@ impl WordResourceView {
             sentences,
             ..
         } = resource;
-        let word = WordInfoView::init(word, resource_path(), word_db.zpk_name.as_str());
+        let word = WordInfoView::init(word, zk_path_str);
         let sentences: Vec<SentenceView> = sentences
             .into_iter()
             .map(|x| SentenceView::init(x, zk_path_str))
@@ -60,9 +59,9 @@ pub struct WordInfoView {
 }
 
 impl WordInfoView {
-    pub fn init(word_info: WordInfo, dir: &str, zpk_name: &str) -> Self {
-        let audio_us = format!("{}\\{}\\{}", dir, zpk_name, word_info.audio_us);
-        let audio_uk = format!("{}\\{}\\{}", dir, zpk_name, word_info.audio_uk);
+    pub fn init(word_info: WordInfo, dir: &str) -> Self {
+        let audio_us = format!("{}\\{}", dir, word_info.audio_us);
+        let audio_uk = format!("{}\\{}", dir, word_info.audio_uk);
         Self {
             word_id: word_info.topic_id,
             word: word_info.word,
