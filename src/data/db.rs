@@ -1,8 +1,8 @@
 use anyhow::{anyhow, Result};
 
 use crate::data::hierarchy::App;
-use model::db::WordDb;
 use log::warn;
+use model::db::{LearnedWordDb, WordDb};
 use sqlx::SqlitePool;
 use std::path::PathBuf;
 
@@ -43,8 +43,9 @@ impl ArcDb {
     pub async fn query_review_words(&self, next_time: i64, limit: i32) -> Result<Vec<WordDb>> {
         let rs = sqlx::query!(
             r#"
-        SELECT word_id as "word_id!",word as "word!", zpk_name  from words w WHERE w.word_id in (
-            SELECT word_id  from learned_word lw WHERE next_time < ? ORDER by next_time  limit ?)
+        SELECT w.word_id as "word_id!",word as "word!", zpk_name, lw.current_learned_times as "current_learned_times!"
+            from words w, learned_word lw where w.word_id  = lw.word_id
+                and lw.next_time < ? ORDER by next_time LIMIT ?
         "#,
             next_time,
             limit
@@ -64,9 +65,76 @@ impl ArcDb {
                 word_id: word.word_id,
                 word: word.word,
                 zpk_name,
+                current_learned_times: word.current_learned_times,
             };
             records.push(word);
         }
         Ok(records)
+    }
+
+    pub async fn query_learned_word(&self, word_id: i64) -> Result<LearnedWordDb> {
+        let rs = sqlx::query!(
+            r#"
+        SELECT current_learned_times as "current_learned_times!"
+            , id as "id!"
+            , word_id as "word_id!"
+            , start_time as "start_time!"
+            , last_time as "last_time!"
+            , next_time as "next_time!"
+            , err_times as "err_times!"
+            , total_learned_times as "total_learned_times!"
+            from learned_word where word_id  = ?
+        "#,
+            word_id
+        )
+        .fetch_one(self.db.acquire().await?.as_mut())
+        .await?;
+        Ok(LearnedWordDb {
+            id: rs.id,
+            word_id,
+            start_time: rs.start_time,
+            last_time: rs.last_time,
+            next_time: rs.next_time,
+            err_times: rs.err_times,
+            total_learned_times: rs.total_learned_times,
+            current_learned_times: rs.current_learned_times,
+        })
+    }
+
+    pub async fn exam_success(&self, next_time: i64, last_time: i64, word_id: i64) -> Result<u64> {
+        let rows_affected = sqlx::query!(
+            r#"
+        update learned_word set last_time = ?
+            , total_learned_times = total_learned_times + 1
+            , current_learned_times = current_learned_times + 1
+            , next_time = ? where learned_word.word_id = ?
+        "#,
+            last_time,
+            next_time,
+            word_id
+        )
+        .execute(self.db.acquire().await?.as_mut())
+        .await?
+        .rows_affected();
+        Ok(rows_affected)
+    }
+
+    pub async fn exam_fail(&self, last_time: i64, word_id: i64) -> Result<u64> {
+        let rows_affected = sqlx::query!(
+            r#"
+            update learned_word set err_times = err_times + 1
+                , last_time = ?
+                , total_learned_times = total_learned_times + 1
+                , current_learned_times = 0
+                ,  next_time  = ? where learned_word.word_id = ?
+        "#,
+            last_time,
+            last_time,
+            word_id
+        )
+        .execute(self.db.acquire().await?.as_mut())
+        .await?
+        .rows_affected();
+        Ok(rows_affected)
     }
 }

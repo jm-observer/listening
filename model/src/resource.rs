@@ -68,7 +68,7 @@ pub struct Sentence {
     pub translate: String,
     pub audio: String,
     pub phrase: String,
-    pub image: Option<String>
+    pub image: Option<String>,
 }
 
 /// 英文含义：{"mId":200812,"meanType":"prep.","mean":"at a short distance away from somebody/something"}
@@ -172,26 +172,18 @@ pub struct WordResource {
     pub similars: Vec<Similar>,
 }
 
-
 #[cfg(test)]
 mod test {
     // use std::collections::HashMap;
     // use std::ffi::OsStr;
     // use std::path::PathBuf;
+    use crate::resource::WordResource;
     use tokio::fs;
-    use crate::resource::{WordResource};
-    use crate::get_mime_type;
-
-    #[test]
-    fn test_mime_type() {
-        assert_eq!(get_mime_type("abd.jpg").unwrap(), "image/jpeg".to_string());
-        assert!(get_mime_type("fjpg").is_err());
-    }
 
     #[tokio::test]
     async fn test_serde() {
         let mut dirs = tokio::fs::read_dir("D:\\u_unpack").await.unwrap();
-        let mut pack_num= 0;
+        let mut pack_num = 0;
         // let mut tys = HashMap::new();
         // let mut path_extensions = HashMap::new();
         while let Some(pack) = dirs.next_entry().await.unwrap() {
@@ -235,8 +227,4 @@ mod test {
         // }
         println!("pack_num: {}", pack_num);
     }
-
-
 }
-
-

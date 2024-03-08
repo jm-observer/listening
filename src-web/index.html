@@ -4,13 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TailwindCSS Documentation</title>
-    <link rel="stylesheet" href="./output.css" />
+    <link rel="stylesheet" href="./output.css"/>
     <script src="script/init_const.js"></script>
     <script src="script/listen.js"></script>
     <script src="script/tab.js"></script>
     <script src="script/home.js"></script>
     <script src="script/common.js"></script>
     <script src="script/review.js"></script>
+    <script src="script/examine.js"></script>
     <style>
         /* Ensure the font is Inter */
         /** 图标字体 **/
@@ -24,37 +25,84 @@
             url('./font/iconfont.svg?v=282#layui-icon') format('svg');
         }
 
-        .layui-icon{
-            font-family:"layui-icon" !important;
+        .layui-icon {
+            font-family: "layui-icon" !important;
             font-size: 16px;
             font-style: normal;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
         }
+
         body {
             font-family: 'Inter', sans-serif;
         }
+
         .text-last-right {
             text-align-last: right;
         }
-        .layui-icon-tips:before{content:"\e702"}
-        .layui-icon-github:before{content:"\e6a7"}
-        .layui-icon-close:before{content:"\1006"}
-        .layui-icon-history:before{
-            content:"\e68d";
-            font-size: 22px;}
-        .layui-icon-voice:before{content:"\e688";
-            font-family:"layui-icon" !important;
+
+        .layui-icon-tips:before {
+            content: "\e702"
+        }
+
+        .layui-icon-github:before {
+            content: "\e6a7"
+        }
+
+        .layui-icon-close:before {
+            content: "\1006"
+        }
+
+        .layui-icon-history:before {
+            content: "\e68d";
+            font-size: 22px;
+        }
+
+        .layui-icon-voice:before {
+            content: "\e688";
+            font-family: "layui-icon" !important;
             font-size: 12px;
             font-style: normal;
             -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;}
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .layui-icon-right:before {
+            content: "\e6c6";
+            font-family: "layui-icon" !important;
+            color: chartreuse;
+            font-size: 16px;
+            font-style: normal;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .layui-icon-false:before {
+            content: "\e6c5";
+            font-family: "layui-icon" !important;
+            color: crimson;
+            font-size: 16px;
+            font-style: normal;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
 
         .clamp-2 {
             display: -webkit-box;
             -webkit-box-orient: vertical;
             -webkit-line-clamp: 2;
             overflow: hidden;
+        }
+
+        @keyframes changeEffect {
+            0% {
+                opacity: 1;
+                top: 0;
+            }
+            100% {
+                opacity: 0;
+                top: -20px;
+            }
         }
     </style>
 </head>
@@ -72,12 +120,12 @@
     <main class="h-full block flex-grow">
         <div class="flex h-full">
             <section class="w-full pl-1 h-full flex-grow">
-                <div class="bg-white p-1 rounded shadow  h-inherit flex flex-col" >
+                <div class="bg-white p-1 rounded shadow  h-inherit flex flex-col">
                     <!-- Tabs -->
                     <ul id="tabs" class="flex border-b py-1">
                         <li id="tab-home" class="mr-1 shadow rounded-md justify-center">
                             <div class="flex px-4">
-                                <a onclick="display_tab('home')" class="bg-white inline-block py-2 px-1" href="#">
+                                <a id="display_home" class="bg-white inline-block py-2 px-1" href="#">
                                     home</a>
                             </div>
                         </li>
@@ -86,7 +134,10 @@
                     <div id="tabs-content" class="text-xs tab-content p-0.5 block bg-gray-100 flex-grow">
                         <div id="tab-content-home" class="tab-pane active block bg-white h-full">
                             <button type="button" id="to_review" class="m-1 bg-yellow-500 py-1 px-2 rounded mr-1">
-                                review
+                                复习
+                            </button>
+                            <button type="button" id="to_exam" class="m-1 bg-yellow-500 py-1 px-2 rounded mr-1">
+                                测试
                             </button>
                         </div>
                     </div>
@@ -122,17 +173,17 @@
             </label>
             <input class="checkbox checkbox-xs" id="credential" name="credential" type="checkbox">
         </div>
-        <div class="flex mb-2 hidden" id="user_name_div" >
+        <div class="flex mb-2 hidden" id="user_name_div">
             <label class="w-24" for="user_name">
                 user name
             </label>
-            <input id="user_name" name="user_name"  class="input input-bordered input-xs flex-grow" type="text">
+            <input id="user_name" name="user_name" class="input input-bordered input-xs flex-grow" type="text">
         </div>
-        <div class="flex mb-2 hidden" id="password_div" >
+        <div class="flex mb-2 hidden" id="password_div">
             <label class="w-24" for="password">
                 password
             </label>
-            <input id="password" name="password"  class="input input-bordered input-xs flex-grow" type="text">
+            <input id="password" name="password" class="input input-bordered input-xs flex-grow" type="text">
         </div>
         <div class="flex items-center mb-2">
             <label class="w-24">
@@ -153,14 +204,15 @@
                     <label id="tls-none-label" class="mr-2 px-2 w-full" for="tls-none">none</label>
                 </div>
                 <div class="flex items-center mb-2" title="Tls connection and through CA verification of the server">
-                    <input id="tls-ca" class="radio radio-xs"  type="radio" name="tls" value="ca">
+                    <input id="tls-ca" class="radio radio-xs" type="radio" name="tls" value="ca">
                     <label id="tls-ca-label" class="mr-2 px-2 w-full" for="tls-ca">ca</label>
                 </div>
                 <div class="flex items-center mb-2" title="Tls connection and not verifying the server">
                     <input id="tls-insecurity" class="radio radio-xs" type="radio" name="tls" value="insecurity">
                     <label id="tls-insecurity-label" class="mr-2 px-2 w-full" for="tls-insecurity">insecurity</label>
                 </div>
-                <div class="flex items-center mb-2" title="Tls connection and through self-signed certificate verification of the server">
+                <div class="flex items-center mb-2"
+                     title="Tls connection and through self-signed certificate verification of the server">
                     <input id="tls-self-signed" class="radio radio-xs" type="radio" name="tls" value="self_signed">
                     <label id="tls-self-signed-label" class="mr-2 px-2 w-full" for="tls-self-signed">self-signed</label>
                 </div>
@@ -168,16 +220,19 @@
         </div>
         <div class="flex items-center mb-2" id="self_signed_ca_div">
             <label class="w-24" for="self_signed_ca">self-signed-ca</label>
-            <input readonly id="self_signed_ca" name="self_signed_ca"  class="input input-bordered input-xs flex-grow" type="text">
+            <input readonly id="self_signed_ca" name="self_signed_ca" class="input input-bordered input-xs flex-grow"
+                   type="text">
         </div>
         <div class="flex items-center mb-2">
-            <label class="w-24" for="params" >
+            <label class="w-24" for="params">
                 params
             </label>
-            <textarea class="textarea textarea-bordered textarea-xs h-56  flex-grow" name="params" id="params" rows="6"></textarea>
+            <textarea class="textarea textarea-bordered textarea-xs h-56  flex-grow" name="params" id="params"
+                      rows="6"></textarea>
         </div>
         <div class="flex items-center justify-center">
-            <button onclick="check_then_save()" type="button" id="save" class="m-1 bg-yellow-500 py-1 px-2 rounded mr-1">
+            <button onclick="check_then_save()" type="button" id="save"
+                    class="m-1 bg-yellow-500 py-1 px-2 rounded mr-1">
                 save
             </button>
         </div>

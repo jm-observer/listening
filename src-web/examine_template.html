@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="./output.css"/>
+</head>
+<body>
+<div id="tab-content-__id__" class="tab-pane h-full w-full w-1/2">
+    <div class="p-2">
+        <button id="examine" type="button" class="bg-yellow-500 py-1 px-2 rounded text-xs">测试</button>
+        <button id="examine_pause" type="button" class="bg-yellow-500 py-1 px-2 rounded text-xs">暂停</button>
+    </div>
+    <div class="pt-2">
+        <div id="examine_remaining_count" class="p-2"></div>
+        <div id="examine_right_count" class="p-2"></div>
+        <!--        <span id="plus_one" class="px-5 relative hidden animate-bounce">+1</span>-->
+        <div id="examine_false_count" class="p-2"></div>
+    </div>
+    <div><input id="examine_index" value="0" class="hidden">
+        <audio id="examine_accent_audio" class="hidden"></audio>
+    </div>
+    <div class="p-2">
+        <input name="examine_word" id="examine_word" class="input input-bordered input-xs flex-grow px-2 w-30"
+               type="text">
+        <i id="exam_right" class="layui-icon-right hidden px-2"></i>
+        <i id="exam_false" class="layui-icon-false hidden px-2"></i>
+    </div>
+    <div class="p-2">
+        <button id="examine_submit" type="button" class="bg-yellow-500 py-1 px-2 rounded text-xs">确认
+        </button>
+        <button id="examine_turn_to_review" type="button"
+                class="bg-yellow-500 py-1 px-2 rounded text-xs hidden">复习
+        </button>
+    </div>
+</div>
+</body>
+</html>

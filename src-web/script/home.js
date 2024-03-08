@@ -5,6 +5,11 @@ function to_review() {
     let _ = _to_review("review", "review");
 }
 
+function to_exam() {
+    button_click_style(document.getElementById("to_exam"));
+    let _ = _to_exam("examine", "examine");
+}
+
 
 async function select_file() {
     const selected = await dialog_open({

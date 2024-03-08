@@ -1,10 +1,10 @@
 function init_tab(id, name) {
     let template = "<li id='tab-__id__' class='mr-1 shadow rounded-md justify-center'>\n" +
         "                            <div class='flex px-4'>\n" +
-        "                                <a onclick='display_tab(\"__id__\")' class='items-center bg-white py-2 px-1 flex' href='#'>\n" +
+        "                                <a id='display___id__' class='items-center bg-white py-2 px-1 flex' href='#'>\n" +
         "                                    <span id='status-__id__' class='h-3 w-3 bg-gray-400 rounded-full mr-2'></span>\n" +
         "                                    #name#</a>\n" +
-        "                                <a onclick='close_tab(\"__id__\")' class='items-center bg-white px-1 pb-1 pt-1.5  hover:text-teal-800 flex'><i class='layui-icon layui-icon-close'></i></a>\n" +
+        "                                <a id='close___id__' class='items-center bg-white px-1 pb-1 pt-1.5  hover:text-teal-800 flex'><i class='layui-icon layui-icon-close'></i></a>\n" +
         "                            </div>\n" +
         "                        </li>";
 
@@ -12,7 +12,17 @@ function init_tab(id, name) {
 
     var tempDiv = document.createElement('div');
     tempDiv.innerHTML = htmlString;
-    return tempDiv.children[0];
+    const tableBody = document.getElementById("tabs");
+    tableBody.appendChild(tempDiv.children[0]);
+
+    document.getElementById('display_' + id).addEventListener('click', async function(event) {
+        event.stopPropagation();
+        display_tab(id);
+    });
+    document.getElementById('close_' + id).addEventListener('click', async function(event) {
+        event.stopPropagation();
+        close_tab(id);
+    })
 }
 
 

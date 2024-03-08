@@ -76,7 +76,16 @@ async function loading() {
     }
     document.getElementById('to_review').addEventListener('click', function(event) {
         event.stopPropagation();
-        to_review()
+        to_review();
+    });
+    document.getElementById('to_exam').addEventListener('click', function(event) {
+        event.stopPropagation();
+        to_exam();
+    });
+
+    document.getElementById('display_home').addEventListener('click', function(event) {
+        event.stopPropagation();
+        display_tab('home');
     });
 }
 

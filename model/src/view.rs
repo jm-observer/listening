@@ -1,8 +1,8 @@
-use std::path::PathBuf;
-use anyhow::anyhow;
-use serde::{Deserialize, Serialize};
 use crate::db::WordDb;
 use crate::resource::{Sentence, WordInfo, WordResource};
+use anyhow::anyhow;
+use serde::{Deserialize, Serialize};
+use std::path::PathBuf;
 
 #[derive(Serialize, Deserialize)]
 pub struct WordResourceView {
@@ -10,13 +10,17 @@ pub struct WordResourceView {
     pub cn_mean: Vec<String>,
     pub en_mean: Vec<String>,
     pub sentences: Vec<SentenceView>,
-    pub image: Option<String>
+    pub image: Option<String>,
+    pub current_learned_times: i64,
 }
 
 impl WordResourceView {
     pub async fn init(word_db: WordDb, app_home_path: PathBuf) -> anyhow::Result<Self> {
         let zk_path = word_db.zpk_path(app_home_path.clone());
-        let zk_path_str = zk_path.as_os_str().to_str().ok_or(anyhow!("zk_path to string fail"))?;
+        let zk_path_str = zk_path
+            .as_os_str()
+            .to_str()
+            .ok_or(anyhow!("zk_path to string fail"))?;
         let resource = word_db.resource(app_home_path.clone()).await?;
         let WordResource {
             word,
@@ -37,7 +41,9 @@ impl WordResourceView {
             word,
             cn_mean,
             en_mean,
-            sentences, image
+            sentences,
+            image,
+            current_learned_times: word_db.current_learned_times,
         })
     }
 }
@@ -89,7 +95,25 @@ impl SentenceView {
             sentence: sentence.sentence_en,
             translate: sentence.translate,
             audio,
-            image
+            image,
         }
+    }
+}
+#[derive(Deserialize, Debug)]
+#[serde(tag = "rs", rename_all = "snake_case")]
+pub enum ExamRs {
+    Success { word_id: i64 },
+    Fail { word_id: i64 },
+}
+#[cfg(test)]
+mod test {
+    use crate::view::ExamRs;
+
+    #[test]
+    pub fn test_deser() {
+        let val_str = r#"{"rs": "success", "word_id": 1}"#;
+        let _: ExamRs = serde_json::from_str(val_str).unwrap();
+        let val_str = r#"{"rs": "fail", "word_id": 1}"#;
+        let _: ExamRs = serde_json::from_str(val_str).unwrap();
     }
 }
