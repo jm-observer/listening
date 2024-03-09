@@ -37,6 +37,14 @@ impl From<std::io::Error> for Error {
     }
 }
 
+impl From<sqlx::Error> for Error {
+    fn from(value: sqlx::Error) -> Self {
+        Self {
+            msg: value.to_string(),
+        }
+    }
+}
+
 impl From<serde_json::Error> for Error {
     fn from(value: serde_json::Error) -> Self {
         Self {

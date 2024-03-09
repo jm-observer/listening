@@ -100,10 +100,10 @@ impl SentenceView {
     }
 }
 #[derive(Deserialize, Debug)]
-#[serde(tag = "rs", rename_all = "snake_case")]
+#[serde(rename_all = "snake_case")]
 pub enum ExamRs {
-    Success { word_id: i64 },
-    Fail { word_id: i64 },
+    Success,
+    Fail,
 }
 #[cfg(test)]
 mod test {
@@ -111,9 +111,9 @@ mod test {
 
     #[test]
     pub fn test_deser() {
-        let val_str = r#"{"rs": "success", "word_id": 1}"#;
+        let val_str = r#""success""#;
         let _: ExamRs = serde_json::from_str(val_str).unwrap();
-        let val_str = r#"{"rs": "fail", "word_id": 1}"#;
+        let val_str = r#""fail""#;
         let _: ExamRs = serde_json::from_str(val_str).unwrap();
     }
 }

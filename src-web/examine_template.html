@@ -22,14 +22,17 @@
     <div class="p-2">
         <input name="examine_word" id="examine_word" class="input input-bordered input-xs flex-grow px-2 w-30"
                type="text">
-        <i id="exam_right" class="layui-icon-right hidden px-2"></i>
-        <i id="exam_false" class="layui-icon-false hidden px-2"></i>
+        <i id="exam_right_icon" class="layui-icon-right hidden px-2"></i>
+        <i id="exam_false_icon" class="layui-icon-false hidden px-2"></i>
     </div>
     <div class="p-2">
         <button id="examine_submit" type="button" class="bg-yellow-500 py-1 px-2 rounded text-xs">确认
         </button>
+        <button id="examine_turn_to_review_right" type="button"
+                class="bg-yellow-500 py-1 px-2 rounded text-xs hidden">复习正确单词
+        </button>
         <button id="examine_turn_to_review" type="button"
-                class="bg-yellow-500 py-1 px-2 rounded text-xs hidden">复习
+                class="bg-yellow-500 py-1 px-2 rounded text-xs hidden">复习错误单词
         </button>
     </div>
 </div>

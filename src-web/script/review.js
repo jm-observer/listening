@@ -79,6 +79,7 @@ async function _to_review(id, name, new_review_words) {
     init_global_var();
     await init_word_by_index(review_index, false);
     display_tab(id);
+    start_listen();
 }
 
 function start_listen() {

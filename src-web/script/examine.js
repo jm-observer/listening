@@ -7,7 +7,7 @@ let is_submit = false;
 let error_times = 0;
 let right_times = 0;
 let examine_error_words = [];
-
+let examine_right_words = [];
 let const_play_count = 5;
 
 async function _to_exam(id, name) {
@@ -45,6 +45,13 @@ async function _to_exam(id, name) {
                     start_listen();
                 });
 
+                document.getElementById('examine_turn_to_review_right').addEventListener('click', async function (event) {
+                    if (examine_right_words.length == 0) {
+                        //todo tell people
+                    }
+                    await _to_review("review", "review", examine_right_words);
+                    start_listen();
+                });
 
                 document.getElementById('examine_submit').addEventListener('click', submit);
                 const element = document.getElementById('examine_word'); // Replace 'yourElementId' with your actual element's ID
@@ -117,24 +124,22 @@ async function submit() {
     }
     let user_word = document.getElementById('examine_word').value;
     let exam_word = examine_words[examine_index];
-    const icon_right = document.getElementById('exam_right');
-    const icon_false = document.getElementById('exam_false');
+    const icon_right = document.getElementById('exam_right_icon');
+    const icon_false = document.getElementById('exam_false_icon');
     if (user_word == exam_word.word.word) {
         right_times++;
         icon_right.classList.remove("hidden");
         icon_false.classList.add("hidden");
         await invoke("exam", {
-            "rs": {
-                "rs": "success",
-                "word_id": exam_word.word.word_id,
-                "current_learned_times": exam_word.current_learned_times
-            }
+            "rs": "success",
+            "wordId": exam_word.word.word_id,
         });
+        examine_right_words.push(exam_word);
     } else {
         error_times++;
         icon_false.classList.remove("hidden");
         icon_right.classList.add("hidden");
-        await invoke("exam", {"rs": {"rs": "fail", "word_id": exam_word.word.word_id}});
+        await invoke("exam", {"rs": "fail", "wordId": exam_word.word.word_id});
         examine_error_words.push(exam_word);
     }
     examine_index++;
@@ -174,20 +179,27 @@ async function start_to_examine() {
     right_times = 0;
     examine_words = examine_error_words;
     examine_error_words = [];
+    examine_right_words = [];
     exam = true;
     examine_index = 0;
     examine_playCount = 0;
     document.getElementById("examine_turn_to_review").classList.add("hidden");
-    document.getElementById('exam_right').classList.add("hidden");
-    document.getElementById('exam_false').classList.add("hidden");
+    document.getElementById("examine_turn_to_review_right").classList.add("hidden");
+    document.getElementById('exam_right_icon').classList.add("hidden");
+    document.getElementById('exam_false_icon').classList.add("hidden");
     await init_examine_word(examine_words[0]);
     update_exam_remaining_count();
+    init_input();
     document.getElementById('examine_accent_audio').play();
 }
 
 function update_exam_remaining_count() {
     const word_ele = document.getElementById("examine_remaining_count");
-    word_ele.innerText = "剩余数：" + (examine_words.length - examine_index % examine_words.length);
+    if (examine_words.length == 0) {
+        word_ele.innerText = "剩余数：";
+    } else {
+        word_ele.innerText = "剩余数：" + (examine_words.length - examine_index % examine_words.length);
+    }
     const right_count = document.getElementById("examine_right_count");
     right_count.innerText = "正确数：" + right_times;
     const false_count = document.getElementById("examine_false_count");
@@ -203,6 +215,10 @@ function display_rs() {
     false_count.innerText = "错误数：" + error_times;
     if (error_times > 0) {
         const turn_to_review = document.getElementById("examine_turn_to_review");
+        turn_to_review.classList.remove("hidden");
+    }
+    if (right_times > 0) {
+        const turn_to_review = document.getElementById("examine_turn_to_review_right");
         turn_to_review.classList.remove("hidden");
     }
 }

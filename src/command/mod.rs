@@ -9,6 +9,9 @@ use log::{debug, warn};
 use tauri::{command, State};
 use tokio::sync::RwLock;
 
+use crate::data::db::{
+    add_test_record, exam_fail, exam_success, query_learned_word, query_review_words,
+};
 use model::view::*;
 
 type ArcApp = RwLock<App>;
@@ -34,7 +37,7 @@ pub async fn loading(state: State<'_, ArcApp>) -> Result<ViewConfig> {
 pub async fn review_info(state: State<'_, ArcApp>) -> Result<Vec<WordResourceView>> {
     let app = state.read().await;
     let now = chrono::Local::now().timestamp();
-    let words = app.db.query_review_words(now, 5).await?;
+    let words = query_review_words(app.db.get_connect().await?.as_mut(), now, 30).await?;
     let mut view_tasks = Vec::with_capacity(words.len());
     for word in words {
         let home_path = app.app_home_path.clone();
@@ -54,19 +57,22 @@ pub async fn review_info(state: State<'_, ArcApp>) -> Result<Vec<WordResourceVie
     Ok(rs)
 }
 #[command]
-pub async fn exam(rs: ExamRs, state: State<'_, ArcApp>) -> Result<()> {
-    debug!("exam: {rs:?}");
+pub async fn exam(rs: ExamRs, word_id: i64, state: State<'_, ArcApp>) -> Result<()> {
     let now = chrono::Local::now().timestamp();
     let app = state.read().await;
+    let mut tran = app.db.get_transaction().await?;
+    let mut rs_num = 0;
     let rows_affected = match rs {
-        ExamRs::Success { word_id } => {
-            let record = app.db.query_learned_word(word_id).await?;
+        ExamRs::Success => {
+            let record = query_learned_word(tran.as_mut(), word_id).await?;
             let interval_hour = 8i64 * 2i64.pow(record.current_learned_times as u32);
             let next_time = interval_hour * 60 + now;
-            app.db.exam_success(next_time, now, word_id).await?
+            rs_num = 1;
+            exam_success(tran.as_mut(), next_time, now, word_id).await?
         }
-        ExamRs::Fail { word_id } => app.db.exam_fail(now, word_id).await?,
+        ExamRs::Fail => exam_fail(tran.as_mut(), now, word_id).await?,
     };
+    add_test_record(tran.as_mut(), word_id, now, rs_num).await?;
     if rows_affected != 1 {
         warn!("update examine result fail");
     }
