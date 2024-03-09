@@ -41,19 +41,10 @@ async function _to_review(id, name, new_review_words) {
                     const video = document.getElementById('review_accent_audio');
                     if (listening) {
                         video.pause();
-                        if (review_index > 0) {
-                            review_index--;
-                        }
-                        await next_word(review_index, false);
+                        await previous_word();
                         video.play();
                     } else {
-                        if (review_index > 0) {
-                            review_index--;
-                        }
-                        if (review_index % review_words.length == 0 && review_loop > 0) {
-                            review_loop--;
-                        }
-                        await next_word(review_index, false);
+                        await previous_word()
                     }
                 });
                 const video = document.getElementById('review_accent_audio');
@@ -67,8 +58,7 @@ async function _to_review(id, name, new_review_words) {
                         }, 1000); // Wait 2 seconds before replaying
                     }
                     if (review_playCount >= 5) {
-                        review_index++;
-                        await next_word(review_index, true);
+                        await next_word();
                         timeout_id_2 = setTimeout(() => {
                             if (listening) {
                                 video.play();
@@ -87,7 +77,7 @@ async function _to_review(id, name, new_review_words) {
     }
     await init_review_words(new_review_words);
     init_global_var();
-    await next_word(review_index, false);
+    await init_word_by_index(review_index, false);
     display_tab(id);
 }
 
@@ -139,23 +129,37 @@ async function init_review_word(word) {
         cn_mean.className = "p-0.5";
         cn_means.appendChild(cn_mean);
     }
-
     const index = document.getElementById("review_index");
     index.value = 0;
 }
 
-async function next_word(word_index, need_update_loop) {
+async function init_word_by_index() {
     review_playCount = 0;
-    let next_index = word_index % review_words.length;
+    let next_index = review_index % review_words.length;
     await init_review_word(review_words[next_index]);
-    update_remaining_count();
     clearTimeout(timeout_id);
     clearTimeout(timeout_id_2);
-    if (next_index == 0 && need_update_loop) {
+}
+
+async function next_word() {
+    review_index++;
+    if (review_index % review_words.length == 0) {
         review_loop++;
-        update_loop();
-    } else if (!need_update_loop) {
-        update_loop();
+        update_loop()
+    }
+    update_remaining_count();
+    await init_word_by_index()
+}
+
+async function previous_word() {
+    if (review_index > 0) {
+        if (review_index % review_words.length == 0) {
+            review_loop--;
+            update_loop()
+        }
+        review_index--;
+        update_remaining_count();
+        await init_word_by_index()
     }
 }
 
@@ -176,6 +180,8 @@ function init_global_var() {
     review_loop = 0;
     timeout_id = 0;
     timeout_id_2 = 0;
+    update_loop();
+    update_remaining_count()
 }
 
 async function convert_asserts(word) {
