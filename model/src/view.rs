@@ -105,6 +105,16 @@ pub enum ExamRs {
     Success,
     Fail,
 }
+
+#[derive(Deserialize, Debug)]
+#[serde(rename_all = "snake_case")]
+pub enum ReviewTy {
+    Today,
+    Yesterday,
+    TodayError,
+    YesterdayError,
+}
+
 #[cfg(test)]
 mod test {
     use crate::view::ExamRs;

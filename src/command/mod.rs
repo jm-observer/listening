@@ -76,5 +76,6 @@ pub async fn exam(rs: ExamRs, word_id: i64, state: State<'_, ArcApp>) -> Result<
     if rows_affected != 1 {
         warn!("update examine result fail");
     }
+    tran.commit().await?;
     Ok(())
 }
