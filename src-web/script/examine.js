@@ -3,6 +3,7 @@ let exam = false;
 let examine_index = 0;
 let examine_playCount = 0;
 let is_submit = false;
+let is_pause = false;
 
 let error_times = 0;
 let right_times = 0;
@@ -35,6 +36,7 @@ async function _to_exam(id, name) {
                     const video = document.getElementById('examine_accent_audio');
                     video.pause();
                     exam = false;
+                    is_pause = true;
                 });
 
                 document.getElementById('examine_turn_to_review').addEventListener('click', async function (event) {
@@ -149,10 +151,7 @@ async function submit() {
 }
 
 async function init_examine_words() {
-    examine_error_words = await invoke("review_info");
-    for (const word of examine_error_words) {
-        await convert_asserts(word);
-    }
+    examine_error_words = await _get_words("review");
 }
 
 async function next_exam_word() {
@@ -172,14 +171,15 @@ async function next_exam_word() {
 }
 
 async function start_to_examine() {
-    if (examine_index > 0 && examine_index % examine_words.length == 0) {
-        // continue to examine
+    if (is_pause) {
         document.getElementById('examine_accent_audio').play();
+        is_pause = false;
         return;
     }
     if (examine_error_words.length == 0) {
         await init_examine_words();
     }
+    is_submit = 0;
     error_times = 0;
     right_times = 0;
     examine_words = examine_error_words;

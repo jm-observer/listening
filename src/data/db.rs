@@ -58,7 +58,7 @@ pub async fn query_review_words(
             r#"
         SELECT w.word_id as "word_id!",word as "word!", zpk_name, lw.current_learned_times as "current_learned_times!"
             from words w, learned_word lw where w.word_id  = lw.word_id
-                and lw.next_time < ? ORDER by next_time LIMIT ?
+                and lw.next_time < ? ORDER by next_time desc LIMIT ?
         "#,
             next_time,
             limit

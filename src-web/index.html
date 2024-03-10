@@ -131,14 +131,16 @@
                         </li>
                     </ul>
                     <!-- Tab Content -->
-                    <div id="tabs-content" class="text-xs tab-content p-0.5 block bg-gray-100 flex-grow">
+                    <div id="tabs-content" class="text-xs tab-content p-0.5 block flex-grow">
                         <div id="tab-content-home" class="tab-pane h-full w-full w-1/2">
-                            <button type="button" id="to_review" class="bg-yellow-500 py-1 px-2 rounded text-xs">
-                                复习
-                            </button>
-                            <button type="button" id="to_exam" class="bg-yellow-500 py-1 px-2 rounded text-xs">
-                                测试
-                            </button>
+                            <div class="p-2">
+                                <button id="to_review" class="btn btn-sm btn-outline font-normal mx-1">
+                                    复习
+                                </button>
+                                <button id="to_exam" class="btn btn-sm btn-outline font-normal mx-1">
+                                    测试
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -231,8 +233,8 @@
                       rows="6"></textarea>
         </div>
         <div class="flex items-center justify-center">
-            <button onclick="check_then_save()" type="button" id="save"
-                    class="m-1 bg-yellow-500 py-1 px-2 rounded mr-1">
+            <button onclick="check_then_save()" id="save"
+                    class="btn btn-sm btn-outline font-normal mx-1">
                 save
             </button>
         </div>

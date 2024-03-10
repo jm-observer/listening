@@ -86,7 +86,7 @@ pub async fn exam(rs: ExamRs, word_id: i64, state: State<'_, ArcApp>) -> Result<
         ExamRs::Success => {
             let record = query_learned_word(tran.as_mut(), word_id).await?;
             let interval_hour = 8i64 * 2i64.pow(record.current_learned_times as u32);
-            let next_time = interval_hour * 60 + now;
+            let next_time = interval_hour * 60 * 60 + now;
             rs_num = 1;
             exam_success(tran.as_mut(), next_time, now, word_id).await?
         }

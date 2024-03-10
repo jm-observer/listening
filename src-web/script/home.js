@@ -1,12 +1,8 @@
-
-
 function to_review() {
-    button_click_style(document.getElementById("to_review"));
     let _ = _to_review("review", "review");
 }
 
 function to_exam() {
-    button_click_style(document.getElementById("to_exam"));
     let _ = _to_exam("examine", "examine");
 }
 
@@ -26,20 +22,18 @@ async function select_file() {
 }
 
 
-
 async function check_then_save() {
-    button_click_style(document.getElementById('save'));
     var form = document.getElementById('info');
     var formData = new FormData(form);
     var formObject = {};
-    formData.forEach(function(value, key){
+    formData.forEach(function (value, key) {
         formObject[key] = value;
     });
     let result = true;
-    if(result) {
-        return ;
+    if (result) {
+        return;
     }
-    if (!formObject["name"] ) {
+    if (!formObject["name"]) {
         result = false;
         document.getElementById('name').classList.add('input-error')
     } else {
@@ -48,13 +42,13 @@ async function check_then_save() {
     formObject["auto_connect"] = check_to_bool(formObject["auto_connect"])
     formObject["credential"] = check_to_bool(formObject["credential"])
     if (formObject["credential"]) {
-        if (!formObject["user_name"] ) {
+        if (!formObject["user_name"]) {
             result = false;
             document.getElementById('user_name').classList.add('input-error')
         } else {
             document.getElementById('user_name').classList.remove('input-error')
         }
-        if (!formObject["password"] ) {
+        if (!formObject["password"]) {
             result = false;
             document.getElementById('password').classList.add('input-error')
         } else {
@@ -63,7 +57,7 @@ async function check_then_save() {
     }
 
     if (formObject["tls"] === "self_signed") {
-        if (formObject["self_signed_ca"] === "" ) {
+        if (formObject["self_signed_ca"] === "") {
             result = false;
             document.getElementById('self_signed_ca').classList.add('file-input-error')
         } else {
