@@ -70,6 +70,35 @@ async function _to_review(id, name, new_review_words) {
                     event.stopPropagation();
                     start_listen();
                 });
+
+                document.getElementById('review_listening_today').addEventListener('click', async function (event) {
+                    event.stopPropagation();
+                    await review_today();
+                    init_global_var();
+                    await init_word_by_index();
+                    start_listen();
+                });
+                document.getElementById('review_listening_yesterday').addEventListener('click', async function (event) {
+                    event.stopPropagation();
+                    await review_yesterday();
+                    init_global_var();
+                    await init_word_by_index();
+                    start_listen();
+                });
+                document.getElementById('review_listening_today_error').addEventListener('click', async function (event) {
+                    event.stopPropagation();
+                    await review_today_error();
+                    init_global_var();
+                    await init_word_by_index();
+                    start_listen();
+                });
+                document.getElementById('review_listening_yesterday_error').addEventListener('click', async function (event) {
+                    event.stopPropagation();
+                    await review_yesterday_error();
+                    init_global_var();
+                    await init_word_by_index();
+                    start_listen();
+                });
             })
             .catch(error => {
                 console.error('There has been a problem with your fetch operation:', error);
@@ -95,7 +124,7 @@ async function init_review_words(new_review_words) {
     if (new_review_words) {
         review_words = new_review_words;
     } else {
-        review_words = await invoke("review_info");
+        review_words = await invoke("review_info", {"ty": "review"});
         for (const word of review_words) {
             await convert_asserts(word);
         }
@@ -194,4 +223,33 @@ async function convert_asserts(word) {
     for (const sentence of word.sentences) {
         sentence.audio = await convertFileSrc(sentence.audio);
     }
+}
+
+async function review_today() {
+    review_words = await _get_words("today");
+}
+
+async function review_yesterday() {
+    review_words = await _get_words("yesterday");
+}
+
+async function review_today_error(ty) {
+    review_words = await _get_words("today_error");
+}
+
+async function review_yesterday_error() {
+    review_words = await _get_words("yesterday_error");
+}
+
+async function review_review() {
+    review_words = await _get_words("review");
+}
+
+
+async function _get_words(ty) {
+    let words = await invoke("review_info", {"ty": ty});
+    for (const word of words) {
+        await convert_asserts(word);
+    }
+    return words;
 }

@@ -17,7 +17,6 @@ pub struct WordDb {
     pub word_id: i64,
     pub word: String,
     pub zpk_name: String,
-    pub current_learned_times: i64,
 }
 
 impl WordDb {

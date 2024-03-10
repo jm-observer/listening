@@ -5,13 +5,12 @@ use crate::command::error::Error;
 use crate::command::view::ViewConfig;
 use crate::data::common::Config;
 use crate::data::hierarchy::App;
-use log::{debug, warn};
+use log::warn;
 use tauri::{command, State};
 use tokio::sync::RwLock;
 
-use crate::data::db::{
-    add_test_record, exam_fail, exam_success, query_learned_word, query_review_words,
-};
+use crate::data::db::*;
+use crate::util::{during_today, during_yesterday};
 use model::view::*;
 
 type ArcApp = RwLock<App>;
@@ -34,10 +33,31 @@ pub async fn loading(state: State<'_, ArcApp>) -> Result<ViewConfig> {
 }
 
 #[command]
-pub async fn review_info(state: State<'_, ArcApp>) -> Result<Vec<WordResourceView>> {
+pub async fn review_info(ty: ReviewTy, state: State<'_, ArcApp>) -> Result<Vec<WordResourceView>> {
     let app = state.read().await;
+    let mut connect = app.db.get_connect().await?;
     let now = chrono::Local::now().timestamp();
-    let words = query_review_words(app.db.get_connect().await?.as_mut(), now, 30).await?;
+    let words = match ty {
+        ReviewTy::Today => {
+            let (start, end) = during_today();
+            query_during_right_words(connect.as_mut(), start, end).await?
+        }
+        ReviewTy::Yesterday => {
+            let (start, end) = during_yesterday();
+            query_during_right_words(connect.as_mut(), start, end).await?
+        }
+        ReviewTy::TodayError => {
+            let (start, end) = during_today();
+            query_during_error_words(connect.as_mut(), start, end).await?
+        }
+        ReviewTy::YesterdayError => {
+            let (start, end) = during_yesterday();
+            query_during_error_words(connect.as_mut(), start, end).await?
+        }
+        ReviewTy::Review => {
+            query_review_words(app.db.get_connect().await?.as_mut(), now, 30).await?
+        }
+    };
     let mut view_tasks = Vec::with_capacity(words.len());
     for word in words {
         let home_path = app.app_home_path.clone();

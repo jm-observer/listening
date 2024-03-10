@@ -172,6 +172,11 @@ async function next_exam_word() {
 }
 
 async function start_to_examine() {
+    if (examine_index > 0 && examine_index % examine_words.length == 0) {
+        // continue to examine
+        document.getElementById('examine_accent_audio').play();
+        return;
+    }
     if (examine_error_words.length == 0) {
         await init_examine_words();
     }

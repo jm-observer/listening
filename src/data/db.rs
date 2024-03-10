@@ -78,7 +78,86 @@ pub async fn query_review_words(
             word_id: word.word_id,
             word: word.word,
             zpk_name,
-            current_learned_times: word.current_learned_times,
+        };
+        records.push(word);
+    }
+    Ok(records)
+}
+
+pub async fn query_during_error_words(
+    connect: &mut SqliteConnection,
+    start_time: i64,
+    end_time: i64,
+) -> Result<Vec<WordDb>> {
+    log::debug!("{}-{}", start_time, end_time);
+    let rs =
+        sqlx::query!(
+            r#"
+            SELECT w.word_id as "word_id!",word as "word!", zpk_name from words w
+                WHERE w.word_id  in (SELECT word_id FROM test_record tr where tr.result = 0 and tr.time > ? and tr.time < ?)
+            "#,
+            start_time,
+            end_time
+        )
+            .fetch_all(connect)
+            .await?
+    ;
+    let mut records = Vec::with_capacity(rs.len());
+    for word in rs {
+        let Some(zpk_name) = word
+            .zpk_name
+            .map(|x| x.replace("\\/r\\/", "").replace("\\.zpk", ""))
+        else {
+            warn!("{}({}) zpk_path is none", word.word, word.word_id);
+            continue;
+        };
+        let word = WordDb {
+            word_id: word.word_id,
+            word: word.word,
+            zpk_name,
+        };
+        records.push(word);
+    }
+    Ok(records)
+}
+
+pub async fn query_during_right_words(
+    connect: &mut SqliteConnection,
+    start_time: i64,
+    end_time: i64,
+) -> Result<Vec<WordDb>> {
+    log::debug!("{}-{}", start_time, end_time);
+    let rs =
+        sqlx::query!(
+            r#"
+            SELECT w.word_id as "word_id!",word as "word!", zpk_name from words w
+                WHERE w.word_id  in (
+                    SELECT word_id  from test_record tr2 where tr2."result" = 1 and tr2.time > ? and tr2.time < ?
+                    EXCEPT
+                    SELECT word_id  from test_record tr1 where tr1."result" = 0 and tr1.time > ? and tr1.time < ?
+                )
+            "#,
+            start_time,
+            end_time,
+            start_time,
+            end_time
+        )
+            .fetch_all(connect)
+            .await?
+        ;
+    let mut records = Vec::with_capacity(rs.len());
+    for word in rs {
+        let Some(zpk_name) = word
+            .zpk_name
+            .map(|x| x.replace("\\/r\\/", "").replace("\\.zpk", ""))
+        else {
+            warn!("{}({}) zpk_path is none", word.word, word.word_id);
+            continue;
+        };
+        let word = WordDb {
+            word_id: word.word_id,
+            word: word.word,
+            zpk_name,
         };
         records.push(word);
     }
@@ -123,16 +202,18 @@ pub async fn exam_success(
     last_time: i64,
     word_id: i64,
 ) -> Result<u64> {
+    // and last_time < ?    避免短时间内重复提交
     let rows_affected = sqlx::query!(
         r#"
         update learned_word set last_time = ?
             , total_learned_times = total_learned_times + 1
             , current_learned_times = current_learned_times + 1
-            , next_time = ? where learned_word.word_id = ?
+            , next_time = ? where learned_word.word_id = ? and last_time < ?
         "#,
         last_time,
         next_time,
-        word_id
+        word_id,
+        last_time
     )
     .execute(connect)
     .await?

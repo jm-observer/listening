@@ -11,7 +11,6 @@ pub struct WordResourceView {
     pub en_mean: Vec<String>,
     pub sentences: Vec<SentenceView>,
     pub image: Option<String>,
-    pub current_learned_times: i64,
 }
 
 impl WordResourceView {
@@ -43,7 +42,6 @@ impl WordResourceView {
             en_mean,
             sentences,
             image,
-            current_learned_times: word_db.current_learned_times,
         })
     }
 }
@@ -113,6 +111,7 @@ pub enum ReviewTy {
     Yesterday,
     TodayError,
     YesterdayError,
+    Review,
 }
 
 #[cfg(test)]
