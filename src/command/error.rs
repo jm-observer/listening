@@ -60,3 +60,11 @@ impl From<tokio::task::JoinError> for Error {
         }
     }
 }
+
+impl From<reqwest::Error> for Error {
+    fn from(value: reqwest::Error) -> Self {
+        Self {
+            msg: value.to_string(),
+        }
+    }
+}

@@ -93,3 +93,10 @@ async function check_then_save() {
         // }
     }
 }
+
+
+function update_global_audio(url) {
+    let global_audio = document.getElementById('global_audio');
+    global_audio.src = url;
+    return global_audio;
+}

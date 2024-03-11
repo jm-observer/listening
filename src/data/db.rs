@@ -263,3 +263,23 @@ pub async fn add_test_record(
     .last_insert_rowid();
     Ok(id)
 }
+
+pub async fn add_audio_replace_record(
+    connect: &mut SqliteConnection,
+    word_id: i64,
+    time: &String,
+    word: &String,
+) -> Result<i64> {
+    let id = sqlx::query!(
+        r#"
+            insert into audio_replace_record(word_id, time, word) values(?, ?, ?)
+        "#,
+        word_id,
+        time,
+        word
+    )
+    .execute(connect)
+    .await?
+    .last_insert_rowid();
+    Ok(id)
+}

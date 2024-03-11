@@ -34,6 +34,14 @@ CREATE TABLE test_record
     result  INTEGER                           NOT NULL DEFAULT 0
 );
 
+CREATE TABLE audio_replace_record
+(
+    id      INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    word_id INTEGER                           NOT NULL,
+    word    TEXT                              NOT NULL,
+    time    TEXT                              NOT NULL
+);
+
 INSERT into learn_plan(learn_batch_num, review_batch_num, review_interval_hour)
 values (20, 40, 12);
 

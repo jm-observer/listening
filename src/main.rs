@@ -63,7 +63,12 @@ async fn main() -> anyhow::Result<()> {
 
     tauri::Builder::default()
         .manage(RwLock::new(data))
-        .invoke_handler(tauri::generate_handler![loading, review_info, exam])
+        .invoke_handler(tauri::generate_handler![
+            loading,
+            review_info,
+            exam,
+            replace_audio
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 

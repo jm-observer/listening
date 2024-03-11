@@ -5,12 +5,14 @@ use crate::command::error::Error;
 use crate::command::view::ViewConfig;
 use crate::data::common::Config;
 use crate::data::hierarchy::App;
-use log::warn;
+use log::{debug, warn};
 use tauri::{command, State};
+use tokio::fs::OpenOptions;
+use tokio::io::AsyncWriteExt;
 use tokio::sync::RwLock;
 
 use crate::data::db::*;
-use crate::util::{during_today, during_yesterday};
+use crate::util::{during_today, during_yesterday, now_str};
 use model::view::*;
 
 type ArcApp = RwLock<App>;
@@ -96,6 +98,31 @@ pub async fn exam(rs: ExamRs, word_id: i64, state: State<'_, ArcApp>) -> Result<
     if rows_affected != 1 {
         warn!("update examine result fail");
     }
+    tran.commit().await?;
+    Ok(())
+}
+#[command]
+pub async fn replace_audio(
+    word_id: i64,
+    word: String,
+    audio_path: String,
+    state: State<'_, ArcApp>,
+) -> Result<()> {
+    debug!("{} {} {}", word_id, word, audio_path);
+    let app = state.read().await;
+    let mut tran = app.db.get_transaction().await?;
+    let word_audio_url = format!("https://dict.youdao.com/dictvoice?type=2&audio={}", word);
+    let resp = reqwest::get(word_audio_url.as_str()).await?.bytes().await?;
+
+    let mut file = OpenOptions::new()
+        .create(true)
+        .write(true)
+        .truncate(true)
+        .open(audio_path)
+        .await?;
+    file.write_all(resp.as_ref()).await?;
+    file.flush().await?;
+    add_audio_replace_record(tran.as_mut(), word_id, &now_str(), &word).await?;
     tran.commit().await?;
     Ok(())
 }

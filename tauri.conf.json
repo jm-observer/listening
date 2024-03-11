@@ -18,10 +18,14 @@
       },
       "shell": {
         "open": true
-      },"clipboard": {
+      },
+      "clipboard": {
         "writeText": true
-      },"fs": {
-        "scope": ["$HOME\\listening\\**"],
+      },
+      "fs": {
+        "scope": [
+          "$HOME\\listening\\**"
+        ],
         "readFile": true
       },
       "path": {
@@ -29,7 +33,9 @@
       },
       "protocol": {
         "asset": true,
-        "assetScope": ["$HOME\\**"]
+        "assetScope": [
+          "$HOME\\**"
+        ]
       }
     },
     "bundle": {
@@ -45,8 +51,8 @@
       ]
     },
     "security": {
-      "csp": "default-src self 'unsafe-inline' https://tauri.localhost;media-src asset: https://asset.localhost;img-src asset: https://asset.localhost;",
-      "devCsp": "default-src self 'unsafe-inline' https://tauri.localhost;media-src asset: https://asset.localhost;img-src asset: https://asset.localhost;"
+      "csp": "default-src self 'unsafe-inline' https://tauri.localhost;media-src asset: https://asset.localhost https://dict.youdao.com;img-src asset: https://asset.localhost;",
+      "devCsp": "default-src self 'unsafe-inline' https://tauri.localhost;media-src asset: https://asset.localhost https://dict.youdao.com;img-src asset: https://asset.localhost;"
     },
     "windows": [
       {

@@ -1,7 +1,16 @@
-use chrono::Timelike;
+#![allow(dead_code)]
+use chrono::{DateTime, Local, Timelike};
 
 pub fn app_name() -> &'static str {
     "listening"
+}
+
+pub fn now_str() -> String {
+    format!("{}", chrono::Local::now().format("%Y-%m-%d %H:%M:%S"))
+}
+
+pub fn date_time_str(date_time: DateTime<Local>) -> String {
+    format!("{}", date_time.format("%Y-%m-%d %H:%M:%S"))
 }
 
 pub fn during_today() -> (i64, i64) {

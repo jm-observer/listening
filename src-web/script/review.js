@@ -32,6 +32,11 @@ async function _to_review(id, name, new_review_words) {
                     const accent_audio = document.getElementById('review_accent_audio');
                     accent_audio.play();
                 });
+                document.getElementById('review_accent_youdao').addEventListener('click', function (event) {
+                    event.stopPropagation();
+                    const accent_audio = document.getElementById('global_audio');
+                    accent_audio.play();
+                });
                 document.getElementById('review_listening_pause').addEventListener('click', async function (event) {
                     const video = document.getElementById('review_accent_audio');
                     video.pause();
@@ -99,10 +104,18 @@ async function _to_review(id, name, new_review_words) {
                     await init_word_by_index();
                     start_listen();
                 });
+
+                document.getElementById('replace_youdao').addEventListener('click', async function (event) {
+                    let word = review_words[review_index];
+                    const word_id = word.word.word_id;
+                    await relace_audio(word.word.word_id, word.word.word, word.word.audio_us_old)
+                });
             })
             .catch(error => {
                 console.error('There has been a problem with your fetch operation:', error);
             });
+
+
     }
     await init_review_words(new_review_words);
     init_global_var();
@@ -148,6 +161,8 @@ async function init_review_word(word) {
     accent.innerText = word.word.accent_us;
     const accent_audio = document.getElementById('review_accent_audio');
     accent_audio.src = word.word.audio_us;
+
+    update_global_audio("https://dict.youdao.com/dictvoice?type=2&audio=" + word.word.word);
 
     const cn_means = document.getElementById("review_cn_mean");
     while (cn_means.firstChild) {
@@ -215,6 +230,7 @@ function init_global_var() {
 }
 
 async function convert_asserts(word) {
+    word.word.audio_us_old = word.word.audio_us;
     word.word.audio_us = await convertFileSrc(word.word.audio_us);
     word.word.audio_uk = await convertFileSrc(word.word.audio_uk);
     if (word.image) {
@@ -252,4 +268,9 @@ async function _get_words(ty) {
         await convert_asserts(word);
     }
     return words;
+}
+
+
+async function relace_audio(word_id, word, audio_path) {
+    await invoke("replace_audio", {"wordId": word_id, "word": word, "audioPath": audio_path});
 }

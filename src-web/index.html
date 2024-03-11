@@ -67,6 +67,15 @@
             -moz-osx-font-smoothing: grayscale;
         }
 
+        .layui-icon-download:before {
+            content: "\e601";
+            font-family: "layui-icon" !important;
+            font-size: 20px;
+            font-style: normal;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
         .layui-icon-right:before {
             content: "\e6c6";
             font-family: "layui-icon" !important;
@@ -118,6 +127,9 @@
         </div>
     </header>
     <main class="h-full block flex-grow">
+        <div>
+            <audio id="global_audio" class="hidden"></audio>
+        </div>
         <div class="flex h-full">
             <section class="w-full pl-1 h-full flex-grow">
                 <div class="bg-white p-1 rounded shadow  h-inherit flex flex-col">
