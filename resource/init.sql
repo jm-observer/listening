@@ -61,8 +61,9 @@ where zpk_path is not null;
 
 INSERT INTO learned_word (word_id, start_time, last_time, next_time, err_times, total_learned_times,
                           current_learned_times)
-SELECT lt.topic_id, lt.create_at / 1000, lt.create_at / 1000, 1709456431 + lt.topic_day, 0, 1, 1
+SELECT lt.topic_id, lt.create_at / 1000, lt.create_at / 1000, strftime('%s', 'now') - lt.topic_day, 0, 1, 1
 FROM learned.ts_learn_offline_dotopic_sync_ids_410 lt
+where lt.topic_id not in (SELECT word_id from learned_word lw);
 ;
 
 
