@@ -12,6 +12,7 @@
     <script src="script/common.js"></script>
     <script src="script/review.js"></script>
     <script src="script/examine.js"></script>
+    <script src="script/log.js"></script>
     <style>
         /* Ensure the font is Inter */
         /** 图标字体 **/
@@ -113,6 +114,16 @@
                 top: -20px;
             }
         }
+
+        .log {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            max-height: 200px;
+            overflow-y: scroll;
+            z-index: 9999;
+        }
+
     </style>
 </head>
 <body class="bg-gray-100 h-screen text-base">
@@ -131,7 +142,7 @@
             <audio id="global_audio" class="hidden"></audio>
         </div>
         <div class="flex h-full">
-            <section class="w-full pl-1 h-full flex-grow">
+            <section class="w-full h-full flex-grow">
                 <div class="bg-white p-1 rounded shadow  h-inherit flex flex-col">
                     <!-- Tabs -->
                     <ul id="tabs" class="flex border-b py-1">
@@ -256,6 +267,14 @@
 <div id="tips-msg" class="fixed right-0 w-130 h-20 z-50 text-xs p-2 border-2 bg-white shadow-md">
     <pre id="tips-msg-pre"></pre>
 </div>
+
+<div id="log_all"
+     class="hidden fixed bottom-6 w-full h-32 z-50 text-sm p-1 px-4 border-1 bg-gray-100 overflow-y-scroll  rounded">
+</div>
+<div id="log_latest"
+     class="fixed flex items-center bottom-0 w-full h-6 z-50 text-sm p-1 bg-gray-100 px-4 rounded border-1">
+</div>
+
 </body>
 <script>
     document.addEventListener('DOMContentLoaded', () => {

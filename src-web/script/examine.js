@@ -132,16 +132,18 @@ async function submit() {
         right_times++;
         icon_right.classList.remove("hidden");
         icon_false.classList.add("hidden");
-        await invoke("exam", {
+        let rs = await invoke("exam", {
             "rs": "success",
             "wordId": exam_word.word.word_id,
         });
+        log(rs);
         examine_right_words.push(exam_word);
     } else {
         error_times++;
         icon_false.classList.remove("hidden");
         icon_right.classList.add("hidden");
-        await invoke("exam", {"rs": "fail", "wordId": exam_word.word.word_id});
+        let rs = await invoke("exam", {"rs": "fail", "wordId": exam_word.word.word_id});
+        log(rs);
         examine_error_words.push(exam_word);
     }
     examine_index++;

@@ -87,6 +87,11 @@ async function loading() {
         event.stopPropagation();
         display_tab('home');
     });
+
+    document.addEventListener('click', function () {
+        hidden_logs()
+    });
+    init_log_plugin();
 }
 
 function display_info() {

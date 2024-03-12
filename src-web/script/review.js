@@ -272,5 +272,6 @@ async function _get_words(ty) {
 
 
 async function relace_audio(word_id, word, audio_path) {
-    await invoke("replace_audio", {"wordId": word_id, "word": word, "audioPath": audio_path});
+    let rs = await invoke("replace_audio", {"wordId": word_id, "word": word, "audioPath": audio_path});
+    log(rs);
 }
