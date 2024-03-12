@@ -42,6 +42,13 @@ CREATE TABLE audio_replace_record
     time    TEXT                              NOT NULL
 );
 
+CREATE TABLE word_ignore
+(
+    id      INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    word_id TEXT                              NOT NULL,
+    word    TEXT                              NOT NULL
+);
+
 INSERT into learn_plan(learn_batch_num, review_batch_num, review_interval_hour)
 values (20, 40, 12);
 
@@ -66,4 +73,13 @@ FROM learned.ts_learn_offline_dotopic_sync_ids_410 lt
 where lt.topic_id not in (SELECT word_id from learned_word lw);
 ;
 
+
+INSERT INTO word_ignore(word_id, word)
+select word_id, word
+from words
+where word in ('wake', 'weak', 'haven', 'heaven');
+DELETE
+from learned_word
+where word_id in (SELECT word_id
+                  from word_ignore);
 

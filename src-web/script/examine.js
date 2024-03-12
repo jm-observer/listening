@@ -9,7 +9,7 @@ let error_times = 0;
 let right_times = 0;
 let examine_error_words = [];
 let examine_right_words = [];
-let const_play_count = 5;
+let const_play_count = 6;
 
 async function _to_exam(id, name) {
     const tab = document.getElementById("tab-" + id);
@@ -82,7 +82,7 @@ async function _to_exam(id, name) {
                                 if (exam) {
                                     video.play();
                                 }
-                            }, 1000); // Wait 2 seconds before replaying
+                            }, 2000); // Wait 2 seconds before replaying
                         }
                     }
                     if (examine_playCount >= const_play_count) {
@@ -120,11 +120,16 @@ async function _to_exam(id, name) {
 
 }
 
-async function submit() {
+async function submit(manual) {
     if (is_submit) {
         return;
     }
     let user_word = document.getElementById('examine_word').value;
+    if (manual) {
+        if (user_word === "") {
+            return;
+        }
+    }
     let exam_word = examine_words[examine_index];
     const icon_right = document.getElementById('exam_right_icon');
     const icon_false = document.getElementById('exam_false_icon');
