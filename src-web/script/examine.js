@@ -82,7 +82,7 @@ async function _to_exam(id, name) {
                                 if (exam) {
                                     video.play();
                                 }
-                            }, 2000); // Wait 2 seconds before replaying
+                            }, 1800); // Wait 2 seconds before replaying
                         }
                     }
                     if (examine_playCount >= const_play_count) {
@@ -178,6 +178,35 @@ async function next_exam_word() {
 }
 
 async function start_to_examine() {
+    if (is_pause) {
+        document.getElementById('examine_accent_audio').play();
+        is_pause = false;
+        return;
+    }
+    if (examine_error_words.length == 0) {
+        await init_examine_words();
+    }
+    is_submit = 0;
+    error_times = 0;
+    right_times = 0;
+    examine_words = examine_error_words;
+    examine_error_words = [];
+    examine_right_words = [];
+    exam = true;
+    examine_index = 0;
+    examine_playCount = 0;
+    document.getElementById("examine_turn_to_review").classList.add("hidden");
+    document.getElementById("examine_turn_to_review_right").classList.add("hidden");
+    document.getElementById('exam_right_icon').classList.add("hidden");
+    document.getElementById('exam_false_icon').classList.add("hidden");
+    await init_examine_word(examine_words[0]);
+    update_exam_remaining_count();
+    init_input();
+    document.getElementById('examine_accent_audio').play();
+}
+
+
+async function init_variate() {
     if (is_pause) {
         document.getElementById('examine_accent_audio').play();
         is_pause = false;

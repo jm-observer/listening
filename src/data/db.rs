@@ -51,7 +51,7 @@ impl ArcDb {
 
 pub async fn query_review_words(
     connect: &mut SqliteConnection,
-    next_time: i64,
+    next_time: &String,
     limit: i32,
 ) -> Result<Vec<WordDb>> {
     let rs = sqlx::query!(
@@ -86,8 +86,8 @@ pub async fn query_review_words(
 
 pub async fn query_during_error_words(
     connect: &mut SqliteConnection,
-    start_time: i64,
-    end_time: i64,
+    start_time: &String,
+    end_time: &String,
 ) -> Result<Vec<WordDb>> {
     log::debug!("{}-{}", start_time, end_time);
     let rs =
@@ -123,8 +123,8 @@ pub async fn query_during_error_words(
 
 pub async fn query_during_right_words(
     connect: &mut SqliteConnection,
-    start_time: i64,
-    end_time: i64,
+    start_time: &String,
+    end_time: &String,
 ) -> Result<Vec<WordDb>> {
     log::debug!("{}-{}", start_time, end_time);
     let rs =
@@ -198,8 +198,8 @@ pub async fn query_learned_word(
 
 pub async fn exam_success(
     connect: &mut SqliteConnection,
-    next_time: i64,
-    last_time: i64,
+    next_time: &String,
+    last_time: &String,
     word_id: i64,
 ) -> Result<u64> {
     // and last_time < ?    避免短时间内重复提交
@@ -223,7 +223,7 @@ pub async fn exam_success(
 
 pub async fn exam_fail(
     connect: &mut SqliteConnection,
-    last_time: i64,
+    last_time: &String,
     word_id: i64,
 ) -> Result<u64> {
     let rows_affected = sqlx::query!(
@@ -247,7 +247,7 @@ pub async fn exam_fail(
 pub async fn add_test_record(
     connect: &mut SqliteConnection,
     word_id: i64,
-    time: i64,
+    time: &String,
     rs: i64,
 ) -> Result<i64> {
     let id = sqlx::query!(

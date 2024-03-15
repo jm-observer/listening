@@ -18,9 +18,9 @@ CREATE TABLE if not EXISTS learned_word
 (
     id                    INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     word_id               INTEGER                           NOT NULL,
-    start_time            INTEGER                           NOT NULL,
-    last_time             INTEGER                           NOT NULL,
-    next_time             INTEGER                           NOT NULL,
+    start_time            Text                              NOT NULL,
+    last_time             Text                              NOT NULL,
+    next_time             Text                              NOT NULL,
     err_times             INTEGER                           NOT NULL DEFAULT 0,
     total_learned_times   INTEGER                           NOT NULL DEFAULT 0,
     current_learned_times INTEGER                           NOT NULL DEFAULT 0
@@ -30,8 +30,8 @@ CREATE TABLE test_record
 (
     id      INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     word_id INTEGER                           NOT NULL,
-    time    INTEGER                           NOT NULL,
-    result  INTEGER                           NOT NULL DEFAULT 0
+    result  INTEGER                           NOT NULL DEFAULT 0,
+    time    Text                              NOT NULL
 );
 
 CREATE TABLE audio_replace_record
@@ -77,7 +77,8 @@ where lt.topic_id not in (SELECT word_id from learned_word lw);
 INSERT INTO word_ignore(word_id, word)
 select word_id, word
 from words
-where word in ('wake', 'weak', 'haven', 'heaven');
+where word in ('wake', 'weak', 'haven', 'heaven', 'flour')
+  and word not in (select word from word_ignore);
 DELETE
 from learned_word
 where word_id in (SELECT word_id

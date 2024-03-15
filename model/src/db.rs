@@ -5,9 +5,9 @@ use std::path::PathBuf;
 pub struct LearnedWordDb {
     pub id: i64,
     pub word_id: i64,
-    pub start_time: i64,
-    pub last_time: i64,
-    pub next_time: i64,
+    pub start_time: String,
+    pub last_time: String,
+    pub next_time: String,
     pub err_times: i64,
     pub total_learned_times: i64,
     pub current_learned_times: i64,
