@@ -34,7 +34,7 @@ async function _to_review(id, name, new_review_words) {
                 });
                 document.getElementById('review_accent_youdao').addEventListener('click', function (event) {
                     event.stopPropagation();
-                    const accent_audio = document.getElementById('global_audio');
+                    const accent_audio = update_global_audio("https://dict.youdao.com/dictvoice?type=2&audio=" + review_words[review_index].word.word);
                     accent_audio.play();
                 });
                 document.getElementById('review_listening_pause').addEventListener('click', async function (event) {
@@ -161,8 +161,6 @@ async function init_review_word(word) {
     accent.innerText = word.word.accent_us;
     const accent_audio = document.getElementById('review_accent_audio');
     accent_audio.src = word.word.audio_us;
-
-    update_global_audio("https://dict.youdao.com/dictvoice?type=2&audio=" + word.word.word);
 
     const cn_means = document.getElementById("review_cn_mean");
     while (cn_means.firstChild) {
