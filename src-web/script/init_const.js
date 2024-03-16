@@ -83,9 +83,9 @@ async function loading() {
         to_exam();
     });
 
-    document.getElementById('display_home').addEventListener('click', function (event) {
+    document.getElementById('display_home').addEventListener('click', async function (event) {
         event.stopPropagation();
-        display_tab('home');
+        await display_tab_home();
     });
 
     document.addEventListener('click', function () {

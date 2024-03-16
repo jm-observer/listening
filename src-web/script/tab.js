@@ -15,11 +15,11 @@ function init_tab(id, name) {
     const tableBody = document.getElementById("tabs");
     tableBody.appendChild(tempDiv.children[0]);
 
-    document.getElementById('display_' + id).addEventListener('click', async function(event) {
+    document.getElementById('display_' + id).addEventListener('click', async function (event) {
         event.stopPropagation();
         display_tab(id);
     });
-    document.getElementById('close_' + id).addEventListener('click', async function(event) {
+    document.getElementById('close_' + id).addEventListener('click', async function (event) {
         event.stopPropagation();
         close_tab(id);
     })
@@ -30,7 +30,7 @@ function display_tab(tab_id) {
     let parentElement = document.getElementById('tabs');
     for (let i = 0; i < parentElement.children.length; i++) {
         let tab = parentElement.children[i];
-        if(tab.id.endsWith(tab_id)) {
+        if (tab.id.endsWith(tab_id)) {
             tab.classList.remove('text-gray-500');
             tab.classList.add('text-teal-500');
         } else {
@@ -42,7 +42,7 @@ function display_tab(tab_id) {
     parentElement = document.getElementById('tabs-content');
     for (let i = 0; i < parentElement.children.length; i++) {
         let tab = parentElement.children[i];
-        if(tab.id.endsWith(tab_id)) {
+        if (tab.id.endsWith(tab_id)) {
             tab.style.display = 'block';
         } else {
             tab.style.display = 'none';
@@ -62,7 +62,7 @@ async function close_tab(tab_id) {
     if (element) {
         element.parentNode.removeChild(element);
     }
-    display_tab("home");
+    await display_tab_home();
     // await get_invoke()("disconnect", { id : tab_id});
 }
 

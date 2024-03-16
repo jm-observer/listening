@@ -107,3 +107,9 @@ async function loading_overview() {
     document.getElementById('today_all_amount').innerText = "今日总测试单词数：" + overview.today_all_amount;
     document.getElementById('today_error_amount').innerText = "今日错误单词数：" + overview.today_error_amount;
 }
+
+async function display_tab_home() {
+    await loading_overview();
+    display_tab('home');
+}
+
