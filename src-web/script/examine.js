@@ -114,6 +114,7 @@ async function _to_exam(id, name) {
     await init_examine_words();
     display_tab(id);
     update_exam_remaining_count();
+
     setTimeout(async () => {
         await start_to_examine()
     }, 2000);
@@ -136,7 +137,9 @@ async function submit(manual) {
     if (user_word == exam_word.word.word) {
         right_times++;
         icon_right.classList.remove("hidden");
-        icon_false.classList.add("hidden");
+        setTimeout(() => {
+            icon_right.classList.add("hidden");
+        }, 1500)
         let rs = await invoke("exam", {
             "rs": "success",
             "wordId": exam_word.word.word_id,
@@ -146,7 +149,9 @@ async function submit(manual) {
     } else {
         error_times++;
         icon_false.classList.remove("hidden");
-        icon_right.classList.add("hidden");
+        setTimeout(() => {
+            icon_false.classList.add("hidden");
+        }, 1500)
         let rs = await invoke("exam", {"rs": "fail", "wordId": exam_word.word.word_id});
         log(rs);
         examine_error_words.push(exam_word);
@@ -207,19 +212,9 @@ async function start_to_examine() {
 
 
 async function init_variate() {
-    if (is_pause) {
-        document.getElementById('examine_accent_audio').play();
-        is_pause = false;
-        return;
-    }
-    if (examine_error_words.length == 0) {
-        await init_examine_words();
-    }
-    is_submit = 0;
+    is_submit = false;
     error_times = 0;
     right_times = 0;
-    examine_words = examine_error_words;
-    examine_error_words = [];
     examine_right_words = [];
     exam = true;
     examine_index = 0;

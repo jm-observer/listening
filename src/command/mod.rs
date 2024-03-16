@@ -142,6 +142,9 @@ pub async fn load_overview(state: State<'_, ArcApp>) -> Result<Overview> {
     let app = state.read().await;
     let mut tran = app.db.get_transaction().await?;
     let today_zero_time = date_time_str(today_zero());
+
+    let tested_amount =
+        query_amount_of_tested(tran.as_mut(), &date_time_str(chrono::Local::now())).await?;
     let waiting_amount =
         query_amount_of_waitint_to_review(tran.as_mut(), &date_time_str(chrono::Local::now()))
             .await?;
@@ -149,6 +152,7 @@ pub async fn load_overview(state: State<'_, ArcApp>) -> Result<Overview> {
     let today_error_amount =
         query_amount_of_today_tested_error(tran.as_mut(), &today_zero_time).await?;
     Ok(Overview {
+        tested_amount,
         waiting_amount,
         today_all_amount,
         today_error_amount,

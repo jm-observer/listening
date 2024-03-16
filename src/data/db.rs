@@ -299,6 +299,18 @@ pub async fn query_amount_of_waitint_to_review(
     Ok(rs.count)
 }
 
+pub async fn query_amount_of_tested(connect: &mut SqliteConnection, now: &String) -> Result<i32> {
+    let rs = sqlx::query!(
+        r#"
+        SELECT COUNT(*) as count from learned_word lw where lw.next_time > ?
+        "#,
+        now,
+    )
+    .fetch_one(connect)
+    .await?;
+    Ok(rs.count)
+}
+
 pub async fn query_amount_of_today_tested(
     connect: &mut SqliteConnection,
     zero: &String,

@@ -103,6 +103,7 @@ function update_global_audio(url) {
 
 async function loading_overview() {
     const overview = await invoke("load_overview");
+    document.getElementById('tested_amount').innerText = "已测试单词数：" + overview.tested_amount;
     document.getElementById('waiting_amount').innerText = "待测试单词数：" + overview.waiting_amount;
     document.getElementById('today_all_amount').innerText = "今日总测试单词数：" + overview.today_all_amount;
     document.getElementById('today_error_amount').innerText = "今日错误单词数：" + overview.today_error_amount;
