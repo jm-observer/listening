@@ -164,6 +164,12 @@
                                     测试
                                 </button>
                             </div>
+                            <div class="pt-2">
+                                <div id="waiting_amount" class="p-2"></div>
+                                <div id="today_all_amount" class="p-2"></div>
+                                <!--        <span id="plus_one" class="px-5 relative hidden animate-bounce">+1</span>-->
+                                <div id="today_error_amount" class="p-2"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -279,6 +285,7 @@
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         loading();
+        loading_overview();
     });
 
 </script>

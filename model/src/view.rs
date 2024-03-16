@@ -114,6 +114,14 @@ pub enum ReviewTy {
     Review,
 }
 
+#[derive(Serialize, Debug)]
+#[serde(rename_all = "snake_case")]
+pub struct Overview {
+    pub waiting_amount: i32,
+    pub today_all_amount: i32,
+    pub today_error_amount: i32,
+}
+
 #[cfg(test)]
 mod test {
     use crate::view::ExamRs;

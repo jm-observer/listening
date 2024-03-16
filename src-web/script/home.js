@@ -100,3 +100,10 @@ function update_global_audio(url) {
     global_audio.src = url;
     return global_audio;
 }
+
+async function loading_overview() {
+    const overview = await invoke("load_overview");
+    document.getElementById('waiting_amount').innerText = "待测试单词数：" + overview.waiting_amount;
+    document.getElementById('today_all_amount').innerText = "今日总测试单词数：" + overview.today_all_amount;
+    document.getElementById('today_error_amount').innerText = "今日错误单词数：" + overview.today_error_amount;
+}

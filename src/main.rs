@@ -67,7 +67,8 @@ async fn main() -> anyhow::Result<()> {
             loading,
             review_info,
             exam,
-            replace_audio
+            replace_audio,
+            load_overview
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

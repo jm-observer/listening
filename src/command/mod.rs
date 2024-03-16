@@ -13,7 +13,7 @@ use tokio::io::AsyncWriteExt;
 use tokio::sync::RwLock;
 
 use crate::data::db::*;
-use crate::util::{date_time_str, during_today, during_yesterday, now_str};
+use crate::util::{date_time_str, during_today, during_yesterday, now_str, today_zero};
 use model::view::*;
 
 type ArcApp = RwLock<App>;
@@ -136,4 +136,21 @@ pub async fn replace_audio(
     add_audio_replace_record(tran.as_mut(), word_id, &now_str(), &word).await?;
     tran.commit().await?;
     Ok(())
+}
+#[command]
+pub async fn load_overview(state: State<'_, ArcApp>) -> Result<Overview> {
+    let app = state.read().await;
+    let mut tran = app.db.get_transaction().await?;
+    let today_zero_time = date_time_str(today_zero());
+    let waiting_amount =
+        query_amount_of_waitint_to_review(tran.as_mut(), &date_time_str(chrono::Local::now()))
+            .await?;
+    let today_all_amount = query_amount_of_today_tested(tran.as_mut(), &today_zero_time).await?;
+    let today_error_amount =
+        query_amount_of_today_tested_error(tran.as_mut(), &today_zero_time).await?;
+    Ok(Overview {
+        waiting_amount,
+        today_all_amount,
+        today_error_amount,
+    })
 }
