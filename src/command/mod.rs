@@ -36,7 +36,11 @@ pub async fn loading(state: State<'_, ArcApp>) -> Result<ViewConfig> {
 }
 
 #[command]
-pub async fn review_info(ty: ReviewTy, state: State<'_, ArcApp>) -> Result<Vec<WordResourceView>> {
+pub async fn review_info(
+    ty: ReviewTy,
+    limit: i32,
+    state: State<'_, ArcApp>,
+) -> Result<Vec<WordResourceView>> {
     let app = state.read().await;
     let mut connect = app.db.get_connect().await?;
     let words = match ty {
@@ -60,7 +64,7 @@ pub async fn review_info(ty: ReviewTy, state: State<'_, ArcApp>) -> Result<Vec<W
             query_review_words(
                 app.db.get_connect().await?.as_mut(),
                 &date_time_str(chrono::Local::now()),
-                30,
+                limit,
             )
             .await?
         }
@@ -92,7 +96,7 @@ pub async fn exam(rs: ExamRs, word_id: i64, state: State<'_, ArcApp>) -> Result<
     let rows_affected = match rs {
         ExamRs::Success => {
             let record = query_learned_word(tran.as_mut(), word_id).await?;
-            let interval_hour = 8u64 * 2u64.pow(record.current_learned_times as u32);
+            let interval_hour = 12u64 * 2u64.pow(record.current_learned_times as u32);
             let next_time = now + Duration::from_secs(interval_hour * 60 * 60);
             rs_num = 1;
             exam_success(

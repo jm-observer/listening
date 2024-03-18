@@ -77,7 +77,7 @@ where lt.topic_id not in (SELECT word_id from learned_word lw);
 INSERT INTO word_ignore(word_id, word)
 select word_id, word
 from words
-where word in ('wake', 'weak', 'haven', 'heaven', 'flour')
+where word in ('wake', 'weak', 'haven', 'heaven', 'flour', 'pot')
   and word not in (select word from word_ignore);
 DELETE
 from learned_word

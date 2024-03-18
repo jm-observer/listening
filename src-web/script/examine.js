@@ -186,6 +186,7 @@ async function start_to_examine() {
     if (is_pause) {
         document.getElementById('examine_accent_audio').play();
         is_pause = false;
+        exam = true;
         return;
     }
     if (examine_error_words.length == 0) {

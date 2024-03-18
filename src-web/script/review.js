@@ -137,10 +137,7 @@ async function init_review_words(new_review_words) {
     if (new_review_words) {
         review_words = new_review_words;
     } else {
-        review_words = await invoke("review_info", {"ty": "review"});
-        for (const word of review_words) {
-            await convert_asserts(word);
-        }
+        await review_review(50);
     }
     await init_review_word(review_words[0])
 }
@@ -255,13 +252,16 @@ async function review_yesterday_error() {
     review_words = await _get_words("yesterday_error");
 }
 
-async function review_review() {
-    review_words = await _get_words("review");
+async function review_review(limit) {
+    review_words = await _get_words("review", limit);
 }
 
 
-async function _get_words(ty) {
-    let words = await invoke("review_info", {"ty": ty});
+async function _get_words(ty, limit) {
+    if (!limit) {
+        limit = 30;
+    }
+    let words = await invoke("review_info", {"ty": ty, "limit": limit});
     for (const word of words) {
         await convert_asserts(word);
     }
