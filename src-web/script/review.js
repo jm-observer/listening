@@ -137,7 +137,7 @@ async function init_review_words(new_review_words) {
     if (new_review_words) {
         review_words = new_review_words;
     } else {
-        await review_review(50);
+        await review_review(60);
     }
     await init_review_word(review_words[0])
 }
