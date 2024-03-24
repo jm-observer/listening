@@ -12,8 +12,8 @@ use tokio::fs::OpenOptions;
 use tokio::io::AsyncWriteExt;
 use tokio::sync::RwLock;
 
-use crate::data::db::*;
 use crate::util::{date_time_str, during_today, during_yesterday, now_str, today_zero};
+use db::*;
 use model::view::*;
 
 type ArcApp = RwLock<App>;

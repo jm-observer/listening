@@ -1,7 +1,6 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 use custom_utils::logger::*;
-use data::db::ArcDb;
 use directories::UserDirs;
 use log::LevelFilter::{Debug, Info};
 use tokio::sync::RwLock;
@@ -10,6 +9,7 @@ mod command;
 mod data;
 mod util;
 
+use crate::data::hierarchy::App;
 use command::*;
 
 use crate::util::app_name;
@@ -58,8 +58,7 @@ async fn main() -> anyhow::Result<()> {
     // }));
 
     info!("home path: {:?}", home_path);
-    let mut db = ArcDb::init_db(home_path.join("db")).await?;
-    let data = db.read_app_data(home_path)?;
+    let data = App::init(home_path).await?;
 
     tauri::Builder::default()
         .manage(RwLock::new(data))

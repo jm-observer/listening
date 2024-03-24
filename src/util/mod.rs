@@ -14,12 +14,11 @@ pub fn date_time_str(date_time: DateTime<Local>) -> String {
 }
 
 pub fn today_zero() -> DateTime<Local> {
-    let zero = chrono::Local::now()
+    Local::now()
         .with_hour(0)
         .and_then(|x| x.with_minute(0))
         .and_then(|x| x.with_second(0))
-        .unwrap();
-    zero
+        .unwrap()
 }
 pub fn during_today() -> (String, String) {
     let now = chrono::Local::now();

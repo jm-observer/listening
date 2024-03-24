@@ -1,12 +1,10 @@
 use anyhow::{anyhow, Result};
-
-use crate::data::hierarchy::App;
 use log::warn;
 use model::db::{LearnedWordDb, WordDb};
 use sqlx::pool::PoolConnection;
 use sqlx::{Sqlite, SqliteConnection, SqlitePool, Transaction};
+use std::fs::File;
 use std::path::PathBuf;
-
 #[derive(Clone, Debug)]
 pub struct ArcDb {
     pub db: SqlitePool,
@@ -15,7 +13,7 @@ pub struct ArcDb {
 impl ArcDb {
     pub async fn init_db(db_path: PathBuf) -> Result<Self> {
         if !db_path.exists() {
-            tokio::fs::File::create(db_path.as_path()).await?;
+            File::create(db_path.as_path())?;
         }
         let db_path_str = db_path
             .to_str()
@@ -24,21 +22,6 @@ impl ArcDb {
         // println!("db path: {}, db url: {}", db_path_str, db_url);
         let db = SqlitePool::connect(db_url.as_str()).await?;
         Ok(ArcDb { db })
-    }
-
-    pub fn read_app_data(&mut self, home_path: PathBuf) -> Result<App> {
-        let commit = env!("GIT_COMMIT", "error");
-        let branch = env!("GIT_BRANCH", "error");
-        let build_date_time = env!("BUILD_DATE_TIME", "error");
-        let hint = format!(
-            r#"1. Current Git build version: {}-{}, build time: {}."#,
-            branch, commit, build_date_time
-        );
-        Ok(App {
-            db: self.clone(),
-            app_home_path: home_path,
-            hint,
-        })
     }
 
     pub async fn get_connect(&self) -> Result<PoolConnection<Sqlite>> {
@@ -101,7 +84,7 @@ pub async fn query_during_error_words(
         )
             .fetch_all(connect)
             .await?
-    ;
+        ;
     let mut records = Vec::with_capacity(rs.len());
     for word in rs {
         let Some(zpk_name) = word
@@ -336,7 +319,29 @@ pub async fn query_amount_of_today_tested_error(
         "#,
         zero,
     )
+        .fetch_one(connect)
+        .await?;
+    Ok(rs.count)
+}
+
+pub async fn query_word(connect: &mut SqliteConnection, word: &String) -> Result<WordDb> {
+    let word = sqlx::query!(
+        r#"
+        SELECT word_id,word, zpk_name
+            from words w where w.word  = ?
+        "#,
+        word
+    )
     .fetch_one(connect)
     .await?;
-    Ok(rs.count)
+    let zpk_name = word
+        .zpk_name
+        .map(|x| x.replace("\\/r\\/", "").replace("\\.zpk", ""))
+        .unwrap_or_default();
+    let word = WordDb {
+        word_id: word.word_id,
+        word: word.word,
+        zpk_name,
+    };
+    Ok(word)
 }

@@ -1,4 +1,4 @@
-workspace = { members = ["model"] }
+workspace = { members = ["base64_to_wav", "db", "model"] }
 [package]
 name = "listening"
 version = "0.2.0"
@@ -36,7 +36,7 @@ futures = "0.3.28"
 
 chrono = { version = "0.4.26", features = [] }
 model = { path = "./model" }
-
+db = { path = "./db" }
 reqwest = "0.11.25"
 
 [features]
