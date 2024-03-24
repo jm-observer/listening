@@ -5,6 +5,15 @@ edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+
 [dependencies]
 base64 = "0.22.0"
 anyhow = "1.0.81"
+db = { path = "../db" }
+directories = "5.0.0"
+tokio = { version = "1.21.0", features = ["macros", "rt-multi-thread"] }
+log = "0.4.21"
+custom-utils = "0.10.13"
+chrono = { version = "0.4.26", features = [] }
+
+

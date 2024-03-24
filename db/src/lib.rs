@@ -250,8 +250,8 @@ pub async fn add_test_record(
 pub async fn add_audio_replace_record(
     connect: &mut SqliteConnection,
     word_id: i64,
-    time: &String,
-    word: &String,
+    time: &str,
+    word: &str,
 ) -> Result<i64> {
     let id = sqlx::query!(
         r#"
@@ -324,7 +324,7 @@ pub async fn query_amount_of_today_tested_error(
     Ok(rs.count)
 }
 
-pub async fn query_word(connect: &mut SqliteConnection, word: &String) -> Result<WordDb> {
+pub async fn query_word(connect: &mut SqliteConnection, word: &str) -> Result<WordDb> {
     let word = sqlx::query!(
         r#"
         SELECT word_id,word, zpk_name
