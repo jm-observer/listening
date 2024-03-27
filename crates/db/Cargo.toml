@@ -8,6 +8,6 @@ edition = "2021"
 [dependencies]
 sqlx = { version = "0.7.1", features = ["sqlite", "runtime-tokio-native-tls"] }
 futures = "0.3.28"
-model = { path = "../model" }
+model = { path = "../../model" }
 log = "0.4.17"
 anyhow = { version = "1.0.64" }

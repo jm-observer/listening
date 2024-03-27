@@ -1,5 +1,6 @@
-use db::ArcDb;
 use std::path::PathBuf;
+
+use db::ArcDb;
 
 pub struct App {
     pub db: ArcDb,

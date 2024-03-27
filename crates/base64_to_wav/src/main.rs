@@ -1,10 +1,11 @@
 use anyhow::Result;
 use base64::prelude::*;
-use db::add_audio_replace_record;
 use directories::UserDirs;
 use log::debug;
 use tokio::fs::OpenOptions;
 use tokio::io::AsyncWriteExt;
+
+use db::add_audio_replace_record;
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -20,7 +21,7 @@ async fn main() -> Result<()> {
         std::fs::create_dir_all(home_path.as_path())?;
     }
     debug!("{:?}", home_path);
-    let db = db::ArcDb::init_db(home_path.join("db")).await?;
+    let db = db::ArcDb::init_db(home_path.join("../../crates/db")).await?;
     let mut conn = db.get_transaction().await?;
 
     let word_db = db::query_word(conn.as_mut(), word).await?;
