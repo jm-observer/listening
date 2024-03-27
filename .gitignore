@@ -17,3 +17,4 @@ node_modules
 src-web/test.html
 output.css
 resource/db
+src-web/scripts-ts/*.js

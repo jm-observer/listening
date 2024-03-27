@@ -9,7 +9,7 @@ edition = "2021"
 [dependencies]
 base64 = "0.22.0"
 anyhow = "1.0.81"
-db = { path = "../crates/db" }
+db = { path = "../db" }
 directories = "5.0.0"
 tokio = { version = "1.21.0", features = ["macros", "rt-multi-thread"] }
 log = "0.4.21"

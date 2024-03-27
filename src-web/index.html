@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>TailwindCSS Documentation</title>
-    <link rel="stylesheet" href="./output.css"/>
+    <link href="styles/output.css" rel="stylesheet"/>
     <script src="script/init_const.js"></script>
     <script src="script/listen.js"></script>
     <script src="script/tab.js"></script>
@@ -13,6 +13,7 @@
     <script src="script/review.js"></script>
     <script src="script/examine.js"></script>
     <script src="script/log.js"></script>
+    <script src="scripts-ts/word_info.js"></script>
     <style>
         /* Ensure the font is Inter */
         /** 图标字体 **/
@@ -127,48 +128,48 @@
     </style>
 </head>
 <body class="bg-gray-100 h-screen text-base">
-<div id="main" class="container px-2 max-w-full h-full flex flex-col">
+<div class="container px-2 max-w-full h-full flex flex-col" id="main">
     <header class="items-center justify-between py-1 flex">
         <div class="items-center">
         </div>
         <div class="flex px-2">
-            <i id="tips" class="layui-icon layui-icon-tips"></i>
-            <a id="github" href="#" class="ml-6 block text-slate-400 hover:text-slate-500 dark:hover:text-slate-300">
+            <i class="layui-icon layui-icon-tips" id="tips"></i>
+            <a class="ml-6 block text-slate-400 hover:text-slate-500 dark:hover:text-slate-300" href="#" id="github">
                 <i class="layui-icon layui-icon-github"></i></a>
         </div>
     </header>
     <main class="h-full block flex-grow">
         <div>
-            <audio id="global_audio" class="hidden"></audio>
+            <audio class="hidden" id="global_audio"></audio>
         </div>
         <div class="flex h-full">
             <section class="w-full h-full flex-grow">
                 <div class="bg-white p-1 rounded shadow  h-inherit flex flex-col">
                     <!-- Tabs -->
-                    <ul id="tabs" class="flex border-b py-1">
-                        <li id="tab-home" class="mr-1 shadow rounded-md justify-center">
+                    <ul class="flex border-b py-1" id="tabs">
+                        <li class="mr-1 shadow rounded-md justify-center" id="tab-home">
                             <div class="flex px-4">
-                                <a id="display_home" class="bg-white inline-block py-2 px-1" href="#">
+                                <a class="bg-white inline-block py-2 px-1" href="#" id="display_home">
                                     home</a>
                             </div>
                         </li>
                     </ul>
                     <!-- Tab Content -->
-                    <div id="tabs-content" class="tab-content p-0.5 block flex-grow">
-                        <div id="tab-content-home" class="tab-pane h-full w-full w-1/2">
+                    <div class="tab-content p-0.5 block flex-grow" id="tabs-content">
+                        <div class="tab-pane h-full w-full w-1/2" id="tab-content-home">
                             <div class="p-2">
-                                <button id="to_review" class="btn btn-sm btn-outline font-normal mx-1">
+                                <button class="btn btn-sm btn-outline font-normal mx-1" id="to_review">
                                     复习
                                 </button>
-                                <button id="to_exam" class="btn btn-sm btn-outline font-normal mx-1">
+                                <button class="btn btn-sm btn-outline font-normal mx-1" id="to_exam">
                                     测试
                                 </button>
                             </div>
                             <div class="pt-2">
-                                <div id="tested_amount" class="p-2"></div>
-                                <div id="waiting_amount" class="p-2"></div>
-                                <div id="today_all_amount" class="p-2"></div>
-                                <div id="today_error_amount" class="p-2"></div>
+                                <div class="p-2" id="tested_amount"></div>
+                                <div class="p-2" id="waiting_amount"></div>
+                                <div class="p-2" id="today_all_amount"></div>
+                                <div class="p-2" id="today_error_amount"></div>
                             </div>
                         </div>
                     </div>
@@ -177,26 +178,26 @@
         </div>
     </main>
 </div>
-<div id="modal" class="fixed right-0 w-96 h-full z-50 hidden">
-    <form id="info" class="p-2 bg-white shadow-md rounded h-5/6 overflow-y-auto text-xs">
-        <input class="input input-bordered input-xs flex-grow hidden" aria-label="id" name="id" id="id" type="text">
+<div class="fixed right-0 w-96 h-full z-50 hidden" id="modal">
+    <form class="p-2 bg-white shadow-md rounded h-5/6 overflow-y-auto text-xs" id="info">
+        <input aria-label="id" class="input input-bordered input-xs flex-grow hidden" id="id" name="id" type="text">
         <div class="flex mb-2">
             <label class="w-24" for="name">
                 alias
             </label>
-            <input class="input input-bordered input-xs flex-grow" name="name" id="name" type="text">
+            <input class="input input-bordered input-xs flex-grow" id="name" name="name" type="text">
         </div>
         <div class="flex mb-2">
             <label class="w-24" for="client_id">
                 client-id
             </label>
-            <input class="input input-bordered input-xs flex-grow" name="client_id" id="client_id" type="text">
+            <input class="input input-bordered input-xs flex-grow" id="client_id" name="client_id" type="text">
         </div>
         <div class="flex items-center mb-2">
             <label class="w-24" for="auto_connect">
                 auto connect
             </label>
-            <input class="checkbox checkbox-xs" id="auto_connect" name="auto_connect" type="checkbox" checked>
+            <input checked class="checkbox checkbox-xs" id="auto_connect" name="auto_connect" type="checkbox">
         </div>
         <div class="flex items-center mb-2">
             <label class="w-24" for="credential">
@@ -208,22 +209,22 @@
             <label class="w-24" for="user_name">
                 user name
             </label>
-            <input id="user_name" name="user_name" class="input input-bordered input-xs flex-grow" type="text">
+            <input class="input input-bordered input-xs flex-grow" id="user_name" name="user_name" type="text">
         </div>
         <div class="flex mb-2 hidden" id="password_div">
             <label class="w-24" for="password">
                 password
             </label>
-            <input id="password" name="password" class="input input-bordered input-xs flex-grow" type="text">
+            <input class="input input-bordered input-xs flex-grow" id="password" name="password" type="text">
         </div>
         <div class="flex items-center mb-2">
             <label class="w-24">
                 version
             </label>
-            <input class="radio radio-xs" id="version-v3" type="radio" name="version" value="v4" checked>
-            <label id="version-v3-label" for="version-v3" class="mr-2 px-2">v4</label>
-            <input class="radio radio-xs" id="version-v5" type="radio" name="version" value="v5">
-            <label id="version-v5-label" for="version-v5" class="mr-2 px-2">v5</label>
+            <input checked class="radio radio-xs" id="version-v3" name="version" type="radio" value="v4">
+            <label class="mr-2 px-2" for="version-v3" id="version-v3-label">v4</label>
+            <input class="radio radio-xs" id="version-v5" name="version" type="radio" value="v5">
+            <label class="mr-2 px-2" for="version-v5" id="version-v5-label">v5</label>
         </div>
         <div class="flex items-center mb-2">
             <label class="w-24">
@@ -231,54 +232,54 @@
             </label>
             <div class="flex-grow">
                 <div class="flex items-center mb-2" title="TCP connection">
-                    <input id="tls-none" class="radio radio-xs" type="radio" name="tls" value="none" checked>
-                    <label id="tls-none-label" class="mr-2 px-2 w-full" for="tls-none">none</label>
+                    <input checked class="radio radio-xs" id="tls-none" name="tls" type="radio" value="none">
+                    <label class="mr-2 px-2 w-full" for="tls-none" id="tls-none-label">none</label>
                 </div>
                 <div class="flex items-center mb-2" title="Tls connection and through CA verification of the server">
-                    <input id="tls-ca" class="radio radio-xs" type="radio" name="tls" value="ca">
-                    <label id="tls-ca-label" class="mr-2 px-2 w-full" for="tls-ca">ca</label>
+                    <input class="radio radio-xs" id="tls-ca" name="tls" type="radio" value="ca">
+                    <label class="mr-2 px-2 w-full" for="tls-ca" id="tls-ca-label">ca</label>
                 </div>
                 <div class="flex items-center mb-2" title="Tls connection and not verifying the server">
-                    <input id="tls-insecurity" class="radio radio-xs" type="radio" name="tls" value="insecurity">
-                    <label id="tls-insecurity-label" class="mr-2 px-2 w-full" for="tls-insecurity">insecurity</label>
+                    <input class="radio radio-xs" id="tls-insecurity" name="tls" type="radio" value="insecurity">
+                    <label class="mr-2 px-2 w-full" for="tls-insecurity" id="tls-insecurity-label">insecurity</label>
                 </div>
                 <div class="flex items-center mb-2"
                      title="Tls connection and through self-signed certificate verification of the server">
-                    <input id="tls-self-signed" class="radio radio-xs" type="radio" name="tls" value="self_signed">
-                    <label id="tls-self-signed-label" class="mr-2 px-2 w-full" for="tls-self-signed">self-signed</label>
+                    <input class="radio radio-xs" id="tls-self-signed" name="tls" type="radio" value="self_signed">
+                    <label class="mr-2 px-2 w-full" for="tls-self-signed" id="tls-self-signed-label">self-signed</label>
                 </div>
             </div>
         </div>
         <div class="flex items-center mb-2" id="self_signed_ca_div">
             <label class="w-24" for="self_signed_ca">self-signed-ca</label>
-            <input readonly id="self_signed_ca" name="self_signed_ca" class="input input-bordered input-xs flex-grow"
+            <input class="input input-bordered input-xs flex-grow" id="self_signed_ca" name="self_signed_ca" readonly
                    type="text">
         </div>
         <div class="flex items-center mb-2">
             <label class="w-24" for="params">
                 params
             </label>
-            <textarea class="textarea textarea-bordered textarea-xs h-56  flex-grow" name="params" id="params"
+            <textarea class="textarea textarea-bordered textarea-xs h-56  flex-grow" id="params" name="params"
                       rows="6"></textarea>
         </div>
         <div class="flex items-center justify-center">
-            <button onclick="check_then_save()" id="save"
-                    class="btn btn-sm btn-outline font-normal mx-1">
+            <button class="btn btn-sm btn-outline font-normal mx-1" id="save"
+                    onclick="check_then_save()">
                 save
             </button>
         </div>
     </form>
 </div>
 
-<div id="tips-msg" class="fixed right-0 w-130 h-20 z-50 text-xs p-2 border-2 bg-white shadow-md">
+<div class="fixed right-0 w-130 h-20 z-50 text-xs p-2 border-2 bg-white shadow-md" id="tips-msg">
     <pre id="tips-msg-pre"></pre>
 </div>
 
-<div id="log_all"
-     class="hidden fixed bottom-6 w-full h-32 z-50 text-sm p-1 px-4 border-1 bg-gray-100 overflow-y-scroll  rounded">
+<div class="hidden fixed bottom-6 w-full h-32 z-50 text-sm p-1 px-4 border-1 bg-gray-100 overflow-y-scroll  rounded"
+     id="log_all">
 </div>
-<div id="log_latest"
-     class="fixed flex items-center bottom-0 w-full h-6 z-50 text-sm p-1 bg-gray-100 px-4 rounded border-1">
+<div class="fixed flex items-center bottom-0 w-full h-6 z-50 text-sm p-1 bg-gray-100 px-4 rounded border-1"
+     id="log_latest">
 </div>
 
 </body>
